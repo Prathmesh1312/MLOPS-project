@@ -3,423 +3,2166 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cloud MLOps CI/CD/CT Control Plane</title>
+  <title>CloudMLOps Studio — CI/CD/CT Control Plane</title>
   <style>
     :root {
-      --bg: #0b1020;
-      --panel: #131c33;
-      --border: #253458;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --blue: #38bdf8;
-      --green: #22c55e;
-      --amber: #f59e0b;
-      --red: #ef4444;
-      --purple: #a855f7;
+      color-scheme: light;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-subtle: #f1f5f9;
+      --border: #cbd5e1;
+      --border-strong: #64748b;
+      --text: #0f172a;
+      --text-secondary: #334155;
+      --primary: #1d4ed8;
+      --primary-hover: #1e40af;
+      --primary-tint: color-mix(in oklab, #1d4ed8 9%, white);
+      --green: #15803d;
+      --green-tint: color-mix(in oklab, #15803d 11%, white);
+      --amber: #b45309;
+      --amber-tint: color-mix(in oklab, #b45309 12%, white);
+      --red: #b91c1c;
+      --red-tint: color-mix(in oklab, #b91c1c 11%, white);
+      --purple: #6d28d9;
+      --purple-tint: color-mix(in oklab, #6d28d9 10%, white);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @media (forced-colors: active) {
+      :root {
+        --bg: Canvas;
+        --surface: Canvas;
+        --surface-subtle: Canvas;
+        --border: CanvasText;
+        --border-strong: CanvasText;
+        --text: CanvasText;
+        --text-secondary: CanvasText;
+        --primary: LinkText;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
-      padding: 20px;
       line-height: 1.5;
+      padding: 18px 24px 48px;
+      max-width: 1420px;
+      margin: 0 auto;
     }
-    header {
+
+    /* Top Bar */
+    .top-header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .brand-group h1 {
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .project-switcher-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-subtle);
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border-strong);
+    }
+
+    .project-switcher-box label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    select, input {
+      font: inherit;
+      font-size: 0.85rem;
+      color: var(--text);
+      background: var(--surface);
+      border: 1.5px solid var(--border-strong);
+      border-radius: 6px;
+      padding: 6px 10px;
+    }
+
+    select:focus-visible, input:focus-visible, button:focus-visible, .table-wrapper:focus-visible, .wf-node:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* Info Icon Toggletip (`interest-triggered-tooltips` pattern) */
+    .title-with-info {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .info-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border-strong);
+      background: var(--surface-subtle);
+      color: var(--text-secondary);
+      font-size: 0.73rem;
+      font-weight: 700;
+      font-family: Georgia, serif;
+      font-style: italic;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .info-btn:hover, .info-btn:focus-visible {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-tint);
+    }
+
+    [interestfor] {
+      --interest-delay-start: 0.15s;
+      interest-delay-start: var(--interest-delay-start);
+      --interest-delay-end: 0.1s;
+      interest-delay-end: var(--interest-delay-end);
+    }
+
+    [popover].toggletip-popover {
+      max-width: 320px;
+      padding: 10px 13px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.8rem;
+      font-weight: 400;
+      line-height: 1.45;
+      box-shadow: 0 8px 24px rgb(15 23 42 / 0.12);
+    }
+
+    @supports (position-area: block-end) {
+      [popover].toggletip-popover {
+        inset: auto;
+        margin: 6px 0 0 0;
+        position-area: block-end;
+        position-try-fallbacks: flip-block, flip-inline;
+      }
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      border: 1.5px solid var(--border-strong);
+      background: var(--surface-subtle);
+      color: var(--text);
+    }
+
+    .badge-blue { background: var(--primary-tint); border-color: var(--primary); color: var(--primary); }
+    .badge-green { background: var(--green-tint); border-color: var(--green); color: var(--green); }
+    .badge-amber { background: var(--amber-tint); border-color: var(--amber); color: var(--amber); }
+    .badge-red { background: var(--red-tint); border-color: var(--red); color: var(--red); }
+    .badge-purple { background: var(--purple-tint); border-color: var(--purple); color: var(--purple); }
+
+    /* ========================================================================
+       WORKFLOW DAG VIEWER (GitHub Actions Style Pipeline Graph)
+       ======================================================================== */
+    .workflow-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 14px;
+    }
+
+    .workflow-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .workflow-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .workflow-meta h2 {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .workflow-trigger {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .workflow-canvas {
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      padding: 10px 4px 12px;
+      gap: 0;
+    }
+
+    .wf-stage-wrap {
+      display: flex;
+      align-items: center;
+      flex: none;
+    }
+
+    .wf-node {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 215px;
+      padding: 11px 14px;
+      background: var(--surface);
+      border: 1.5px solid var(--border-strong);
+      border-radius: 9px;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+
+    .wf-node:hover {
+      border-color: var(--primary);
+      background: var(--surface-subtle);
+    }
+
+    .wf-node[aria-pressed="true"] {
+      border-color: var(--primary);
+      background: var(--primary-tint);
+    }
+
+    .wf-node-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .wf-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.74rem;
+      font-weight: 800;
+      flex: none;
+    }
+
+    .wf-icon.success {
+      background: var(--green);
+      color: #ffffff;
+    }
+
+    .wf-icon.running {
+      background: var(--primary);
+      color: #ffffff;
+      animation: wf-pulse 1s infinite alternate;
+    }
+
+    .wf-icon.warning {
+      background: var(--amber);
+      color: #ffffff;
+    }
+
+    @keyframes wf-pulse {
+      from { opacity: 0.55; }
+      to { opacity: 1; }
+    }
+
+    .wf-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .wf-title {
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .wf-sub {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .wf-duration {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+      flex: none;
+    }
+
+    /* Connector Port & Line between Workflow Nodes (matches GitHub Actions graph) */
+    .wf-edge {
+      display: flex;
+      align-items: center;
+      width: 34px;
+      flex: none;
+      position: relative;
+    }
+
+    .wf-edge-line {
+      height: 2px;
+      width: 100%;
+      background: var(--border-strong);
+    }
+
+    .wf-port {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 2px solid var(--border-strong);
+      flex: none;
+    }
+
+    .wf-port.left {
+      margin-left: -4px;
+    }
+
+    .wf-port.right {
+      margin-right: -4px;
+    }
+
+    .wf-inspector {
+      margin-top: 10px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      font-size: 0.82rem;
+      display: none;
+    }
+
+    .wf-inspector.open {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
-      padding: 16px 20px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      margin-bottom: 20px;
     }
-    .title-group h1 { font-size: 1.35rem; font-weight: 700; color: #fff; }
-    .title-group p { font-size: 0.85rem; color: var(--muted); }
-    .badges { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .badge {
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      background: #0f172a;
+
+    .wf-inspector-grid {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
     }
-    .slot-blue { color: var(--blue); border-color: var(--blue); }
-    .slot-green { color: var(--green); border-color: var(--green); }
-    .grid {
+
+    /* Compact KPI Strip */
+    .kpi-strip {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 18px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
     }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+    }
+
+    .kpi-label {
+      font-size: 0.74rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kpi-value {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 4px;
+    }
+
+    .kpi-sub {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* Status Toast Banner */
+    #statusBanner {
+      margin-bottom: 14px;
+      padding: 10px 15px;
+      border-radius: 8px;
+      background: var(--primary-tint);
+      border: 1.5px solid var(--primary);
+      color: var(--text);
+      font-size: 0.86rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    /* Accessible Tablist */
+    .tablist {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: inline proximity;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0 8px;
+      margin-bottom: 16px;
+      gap: 4px;
+    }
+
+    [role="tab"] {
+      flex: none;
+      scroll-snap-align: start;
+      position: relative;
+      background: transparent;
+      border: none;
+      padding: 12px 16px;
+      font-size: 0.87rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    [role="tab"]:hover {
+      color: var(--text);
+    }
+
+    [role="tab"][aria-selected="true"] {
+      color: var(--primary);
+    }
+
+    [role="tab"][aria-selected="true"]::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      border-block-end: 3px solid var(--primary);
+    }
+
+    /* Child wrapper inside [role="tabpanel"] */
+    .panel-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 16px;
+    }
+
     .card {
-      background: var(--panel);
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 18px;
+      padding: 18px 20px;
     }
-    .card h2 {
-      font-size: 1rem;
-      margin-bottom: 12px;
-      color: var(--blue);
+
+    .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-    .stat-row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--surface-subtle);
     }
-    .stat-box {
-      background: #0f172a;
-      border: 1px solid var(--border);
-      padding: 10px 12px;
-      border-radius: 8px;
-    }
-    .stat-label { font-size: 0.75rem; color: var(--muted); }
-    .stat-val { font-size: 1.15rem; font-weight: 700; margin-top: 2px; }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    label { font-size: 0.75rem; color: var(--muted); display: block; margin-bottom: 4px; }
-    input {
-      width: 100%;
-      padding: 8px 10px;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: #fff;
-      font-size: 0.85rem;
-    }
-    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-    button {
-      cursor: pointer;
-      padding: 9px 14px;
-      border-radius: 8px;
-      border: none;
-      font-weight: 600;
-      font-size: 0.82rem;
-      transition: opacity 0.15s;
-    }
-    button:hover { opacity: 0.9; }
-    .btn-primary { background: var(--blue); color: #08101d; }
-    .btn-Warning { background: var(--amber); color: #08101d; }
-    .btn-success { background: var(--green); color: #08101d; }
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--border);
+
+    .card-header h2 {
+      font-size: 1rem;
+      font-weight: 700;
       color: var(--text);
     }
+
+    /* Form Controls & Buttons */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .field-group label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.79rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .field-group input, .field-group select {
+      width: 100%;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button.btn {
+      cursor: pointer;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.83rem;
+      font-weight: 600;
+      border: 1.5px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background-color 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-success {
+      background: var(--green);
+      color: #ffffff;
+      border-color: var(--green);
+    }
+
+    .btn-warning {
+      background: var(--amber);
+      color: #ffffff;
+      border-color: var(--amber);
+    }
+
+    .btn-danger {
+      background: var(--red-tint);
+      color: var(--red);
+      border-color: var(--red);
+    }
+    .btn-danger:hover {
+      background: var(--red);
+      color: #ffffff;
+    }
+
+    .btn-outline {
+      background: var(--surface);
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+    .btn-outline:hover {
+      background: var(--surface-subtle);
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 0.76rem;
+    }
+
+    /* Output Comparison Boxes */
+    .output-box {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      background: var(--surface-subtle);
+    }
+
+    .output-box.highlight-dynamic {
+      border-color: var(--primary);
+      background: var(--primary-tint);
+    }
+
+    .output-box.highlight-ensemble {
+      border-color: var(--green);
+      background: var(--green-tint);
+    }
+
+    .big-prediction {
+      font-size: 1.55rem;
+      font-weight: 800;
+      margin: 6px 0 4px;
+      color: var(--text);
+    }
+
+    /* Responsive Tables */
+    .table-wrapper {
+      overflow: auto;
+      max-inline-size: 100%;
+      max-block-size: min(420px, 70vh);
+      container-type: inline-size;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
     table {
       width: 100%;
-      border-collapse: collapse;
-      font-size: 0.8rem;
-      margin-top: 8px;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.83rem;
     }
-    th, td {
+
+    caption {
       text-align: left;
-      padding: 7px 8px;
+      padding: 7px 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--surface-subtle);
       border-bottom: 1px solid var(--border);
     }
-    th { color: var(--muted); font-weight: 600; }
-    .pill-ok { color: var(--green); font-weight: 700; }
-    .pill-drift { color: var(--red); font-weight: 700; }
-    #statusBanner {
-      margin-bottom: 16px;
-      padding: 10px 14px;
-      border-radius: 8px;
-      background: #172554;
-      border: 1px solid var(--blue);
-      font-size: 0.85rem;
-      display: none;
+
+    thead {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 2;
+      background: var(--surface-subtle);
+    }
+
+    th, td {
+      text-align: left;
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    th {
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: var(--surface-subtle);
+    }
+
+    tbody th {
+      position: sticky;
+      inset-inline-start: 0;
+      z-index: 1;
+      background: var(--surface);
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    tbody tr:hover td, tbody tr:hover th {
+      background: var(--surface-subtle);
+    }
+
+    @container (width < 560px) {
+      table, thead, tbody, tr, th, td {
+        display: block;
+      }
+      thead {
+        display: none;
+      }
+      tr {
+        margin-block-end: 0.75rem;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      tbody th {
+        position: static;
+        background: var(--surface-subtle);
+      }
+      td {
+        white-space: normal;
+      }
+    }
+
+    /* Native Modal Dialogs */
+    dialog {
+      margin: auto;
+      max-width: 520px;
+      width: calc(100% - 32px);
+      border: 1.5px solid var(--border-strong);
+      border-radius: 12px;
+      padding: 22px;
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    dialog:modal {
+      overscroll-behavior: contain;
+    }
+
+    dialog::backdrop {
+      background: rgb(15 23 42 / 0.45);
+      overflow: hidden;
+      overscroll-behavior: contain;
+    }
+
+    .dialog-header {
+      margin-bottom: 14px;
+    }
+
+    .dialog-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .code-snippet {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.77rem;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 5px;
+      color: var(--text);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .project-card {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .project-card.active-card {
+      border-color: var(--primary);
+      background: var(--primary-tint);
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="title-group">
-      <h1>Cloud MLOps CI/CD/CT Control Plane</h1>
-      <p>Multi-Model Ensemble Regressor &bull; DVC + Cloudflare R2 &bull; MLflow Registry &bull; Zero-Downtime Blue/Green Runtime</p>
+
+  <!-- Top Header Bar -->
+  <header class="top-header">
+    <div class="brand-group">
+      <span class="brand-logo" aria-hidden="true">ML</span>
+      <div class="title-with-info">
+        <h1>CloudMLOps Studio</h1>
+        <button type="button" class="info-btn" interestfor="tip-platform" popovertarget="tip-platform" popovertargetaction="show" aria-label="About CloudMLOps Studio">i</button>
+        <div id="tip-platform" popover="hint" class="toggletip-popover">
+          Multi-project CI/CD/CT platform with SHA-256 dataset versioning, Centralized Model Registry, Dual-Mode CD Serving (Dynamic &amp; Ensemble), and automated drift retraining.
+        </div>
+      </div>
     </div>
-    <div class="badges">
-      <span id="slotBadge" class="badge slot-blue">SLOT: BLUE</span>
-      <span id="containerBadge" class="badge">Container: ...</span>
-      <span id="versionBadge" class="badge">Model: v1.0</span>
-      <a href="/docs" style="color:var(--blue);font-size:0.82rem;text-decoration:none;">Swagger /docs &rarr;</a>
-      <a href="/metrics" style="color:var(--purple);font-size:0.82rem;text-decoration:none;">Prometheus /metrics &rarr;</a>
+
+    <div class="header-controls">
+      <div class="project-switcher-box">
+        <label for="projectSelect">Project:</label>
+        <select id="projectSelect" onchange="onSelectProject(this.value)"></select>
+      </div>
+      <button type="button" class="btn btn-primary" onclick="openInitProjectModal()">
+        + New Project
+      </button>
+      <button type="button" class="btn btn-danger btn-sm" onclick="promptDeleteProject(currentState ? currentState.active_project_id : '')">
+        Remove Project
+      </button>
+      <span id="slotBadge" class="badge badge-blue">◆ SLOT: BLUE</span>
+      <a href="/docs" class="btn btn-outline btn-sm" style="text-decoration:none;">API Docs</a>
+      <a href="/metrics" class="btn btn-outline btn-sm" style="text-decoration:none;">Metrics</a>
     </div>
   </header>
 
-  <div id="statusBanner"></div>
+  <div id="statusBanner" role="status" aria-live="polite"></div>
 
-  <div class="grid">
-    <!-- Card 1: Cloud Runtime & MLflow Champion -->
-    <div class="card">
-      <h2>
-        <span>1. Cloud Runtime &amp; MLflow Registry</span>
-        <button class="btn-outline" onclick="refreshAll()">Refresh</button>
-      </h2>
-      <div class="stat-row">
-        <div class="stat-box">
-          <div class="stat-label">Active Champion Model</div>
-          <div class="stat-val" id="modelName">...</div>
+  <!-- ========================================================================
+       LIVE PIPELINE WORKFLOW GRAPH VIEWER (GitHub Actions DAG Style)
+       ======================================================================== -->
+  <section class="workflow-card" aria-label="Pipeline Workflow Graph">
+    <div class="workflow-header">
+      <div class="workflow-meta">
+        <div class="title-with-info">
+          <h2 id="wfFileName">ci-cd-ct-pipeline.yml</h2>
+          <button type="button" class="info-btn" interestfor="tip-workflow" popovertarget="tip-workflow" popovertargetaction="show" aria-label="About Pipeline Workflow Viewer">i</button>
+          <div id="tip-workflow" popover="hint" class="toggletip-popover">
+            Live end-to-end execution graph. Click any stage node to inspect its execution metrics, data fingerprint, or active container slot.
+          </div>
         </div>
-        <div class="stat-box">
-          <div class="stat-label">Registry Version / R²</div>
-          <div class="stat-val" id="modelMetrics">...</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Total Requests / p95 Latency</div>
-          <div class="stat-val" id="obsStats">...</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Zero-Downtime Hot Reloads</div>
-          <div class="stat-val" id="reloadCount">...</div>
-        </div>
+        <span class="workflow-trigger" id="wfTriggerText">on: push, drift_webhook, project_init</span>
       </div>
       <div class="btn-row">
-        <button class="btn-outline" onclick="switchSlot('blue')">Route Blue Slot</button>
-        <button class="btn-outline" onclick="switchSlot('green')">Route Green Slot</button>
-        <button class="btn-success" onclick="hotReloadModel()">Hot-Reload Model Artifact</button>
+        <span class="badge badge-green" id="wfLiveBadge">● All Stages Healthy</span>
+        <button type="button" class="btn btn-outline btn-sm" onclick="runFullPipelineCheck()">
+          &#8635; Run Pipeline Check
+        </button>
       </div>
-      <h3 style="font-size:0.82rem;color:var(--muted);margin-top:14px;">MLflow Multi-Model Leaderboard</h3>
-      <table>
-        <thead>
-          <tr><th>Model</th><th>RMSE</th><th>MAE</th><th>R²</th></tr>
-        </thead>
-        <tbody id="leaderboardBody"></tbody>
-      </table>
     </div>
 
-    <!-- Card 2: Live Inference & Telemetry Logging -->
-    <div class="card">
-      <h2>2. Micro-Climate Inference &amp; Cloud Telemetry</h2>
+    <div class="workflow-canvas" id="workflowCanvas" role="list" aria-label="Pipeline execution stages"></div>
+
+    <div class="wf-inspector" id="workflowInspector" role="region" aria-label="Selected stage details">
+      <div class="wf-inspector-grid" id="workflowInspectorContent"></div>
+      <button type="button" class="btn btn-outline btn-sm" onclick="closeWorkflowInspector()">Close</button>
+    </div>
+  </section>
+
+  <!-- Compact KPI Strip -->
+  <section class="kpi-strip" aria-label="Active Project Metrics">
+    <div class="kpi-card">
+      <div class="kpi-label">
+        <span>Active Project</span>
+      </div>
+      <div class="kpi-value" id="kpiProjectName">House Price Prediction</div>
+      <div class="kpi-sub" id="kpiTargetInfo">Target: price_usd_k ($1,000 USD)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">
+        <span>Production Model</span>
+      </div>
+      <div class="kpi-value" id="kpiModelVersion">v1.0 — VotingEnsemble</div>
+      <div class="kpi-sub" id="kpiModelMetrics">R²: -- | RMSE: --</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">
+        <span>Dataset Lineage (DVC)</span>
+      </div>
+      <div class="kpi-value" id="kpiDataVersion">data-v1.0</div>
+      <div class="kpi-sub" id="kpiDataHash">SHA-256: -- | Rows: --</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">
+        <span>CD Telemetry</span>
+      </div>
+      <div class="kpi-value" id="kpiTelemetry">0 reqs (0.0 ms)</div>
+      <div class="kpi-sub" id="kpiReloads">Hot-Reloads: 1</div>
+    </div>
+  </section>
+
+  <!-- Navigation Tabs -->
+  <div class="tablist" role="tablist" focusgroup="tablist nomemory" aria-label="Control Plane Sections">
+    <button type="button" role="tab" id="tab-serving" aria-selected="true" focusgroupstart>
+      1. CD Serving (Dynamic &amp; Ensemble)
+    </button>
+    <button type="button" role="tab" id="tab-registry" aria-selected="false">
+      2. Centralized Model &amp; Data Registry
+    </button>
+    <button type="button" role="tab" id="tab-projects" aria-selected="false">
+      3. Projects Workspace
+    </button>
+    <button type="button" role="tab" id="tab-drift" aria-selected="false">
+      4. Drift Monitor &amp; Auto-CT
+    </button>
+    <button type="button" role="tab" id="tab-containers" aria-selected="false">
+      5. Container Services
+    </button>
+  </div>
+
+  <!-- ========================================================================
+       TAB 1: CD MODEL SERVING (DYNAMIC & ENSEMBLE OUTPUT)
+       ======================================================================== -->
+  <div role="tabpanel" id="panel-serving" aria-labelledby="tab-serving" tabindex="0">
+    <div class="panel-inner">
+      <div class="grid-2">
+        <!-- Input Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="title-with-info">
+              <h2 id="servingFormTitle">Inference Request</h2>
+              <button type="button" class="info-btn" interestfor="tip-serving-form" popovertarget="tip-serving-form" popovertargetaction="show" aria-label="About CD Serving Modes">i</button>
+              <div id="tip-serving-form" popover="hint" class="toggletip-popover">
+                Choose Dynamic Output to route to a single optimal estimator, Ensemble Output to aggregate all 4 base models via VotingEnsemble, or Both to compare side-by-side.
+              </div>
+            </div>
+            <span class="badge badge-purple" id="servingVersionPill">v1.0</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="field-group">
+              <label for="servingModeSelect">Serving Mode</label>
+              <select id="servingModeSelect">
+                <option value="both">Compare Both (Dynamic + Ensemble)</option>
+                <option value="dynamic">Dynamic Output Only</option>
+                <option value="ensemble">Ensemble Output Only</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="dynamicStrategySelect">Dynamic Routing Rule</label>
+              <select id="dynamicStrategySelect">
+                <option value="best_accuracy">Best Validation R²</option>
+                <option value="fastest_latency">Lowest Latency (Linear)</option>
+                <option value="interpretable_tree">Decision Tree Rules</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="dynamicFeatureInputs" class="form-grid"></div>
+
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="runPrediction()">
+              &#9654; Run Prediction
+            </button>
+            <button type="button" class="btn btn-outline" onclick="resetFeatureDefaults()">
+              Reset Defaults
+            </button>
+          </div>
+        </div>
+
+        <!-- Output Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="title-with-info">
+              <h2>CD Serving Output</h2>
+              <button type="button" class="info-btn" interestfor="tip-serving-out" popovertarget="tip-serving-out" popovertargetaction="show" aria-label="About Output Comparison">i</button>
+              <div id="tip-serving-out" popover="hint" class="toggletip-popover">
+                Dynamic Output selects a single model based on your routing policy. Ensemble Output computes the weighted consensus across LinearRegression, DecisionTree, RandomForest, and GradientBoosting.
+              </div>
+            </div>
+            <span class="badge" id="predLatencyBadge">Latency: -- ms</span>
+          </div>
+
+          <div class="grid-2" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 14px;">
+            <div class="output-box highlight-dynamic" id="dynamicOutputCard">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span class="badge badge-blue">&#9889; Dynamic Output</span>
+                <span class="code-snippet" id="dynModelBadge">GradientBoosting</span>
+              </div>
+              <div class="big-prediction" id="dynPredValue">--</div>
+              <div style="font-size:0.76rem;color:var(--text-secondary);" id="dynReasonText">
+                Single optimal estimator
+              </div>
+            </div>
+
+            <div class="output-box highlight-ensemble" id="ensembleOutputCard">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span class="badge badge-green">&#9878; Ensemble Output</span>
+                <span class="code-snippet" id="ensAgreementBadge">Agreement: --%</span>
+              </div>
+              <div class="big-prediction" id="ensPredValue">--</div>
+              <div style="font-size:0.76rem;color:var(--text-secondary);" id="ensCiText">
+                95% CI: [--, --]
+              </div>
+            </div>
+          </div>
+
+          <div tabindex="0" role="region" aria-labelledby="memberVotesCaption" class="table-wrapper">
+            <table>
+              <caption id="memberVotesCaption">Individual Base Estimator Predictions</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Estimator</th>
+                  <th scope="col">Prediction</th>
+                  <th scope="col">Architecture</th>
+                </tr>
+              </thead>
+              <tbody id="memberVotesBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Telemetry -->
+      <div class="card">
+        <div class="card-header">
+          <div class="title-with-info">
+            <h2>Recent Inference Telemetry</h2>
+            <button type="button" class="info-btn" interestfor="tip-telemetry" popovertarget="tip-telemetry" popovertargetaction="show" aria-label="About Inference Telemetry">i</button>
+            <div id="tip-telemetry" popover="hint" class="toggletip-popover">
+              Real-time JSONL telemetry log recording project ID, serving mode, Dynamic &amp; Ensemble predictions, model version, data version, and latency.
+            </div>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="refreshLogs()">Refresh</button>
+        </div>
+        <div tabindex="0" role="region" aria-labelledby="telemetryCaption" class="table-wrapper">
+          <table>
+            <caption id="telemetryCaption">Production Telemetry Stream (`logs/production_telemetry.jsonl`)</caption>
+            <thead>
+              <tr>
+                <th scope="col">Time (UTC)</th>
+                <th scope="col">Project</th>
+                <th scope="col">Mode</th>
+                <th scope="col">Dynamic Pred</th>
+                <th scope="col">Ensemble Pred</th>
+                <th scope="col">Model Version</th>
+                <th scope="col">Data Version</th>
+                <th scope="col">Slot</th>
+                <th scope="col">Latency</th>
+              </tr>
+            </thead>
+            <tbody id="logsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       TAB 2: CENTRALIZED MODEL & DATA REGISTRY
+       ======================================================================== -->
+  <div role="tabpanel" id="panel-registry" aria-labelledby="tab-registry" hidden="until-found">
+    <div class="panel-inner">
+      <div class="card">
+        <div class="card-header">
+          <div class="title-with-info">
+            <h2>Centralized Model Registry</h2>
+            <button type="button" class="info-btn" interestfor="tip-registry" popovertarget="tip-registry" popovertargetaction="show" aria-label="About Centralized Model Registry">i</button>
+            <div id="tip-registry" popover="hint" class="toggletip-popover">
+              Every trained model version across all projects is persisted to `models/central_registry.json` and linked to its SHA-256 dataset snapshot. Click "Activate" on any archived version for zero-downtime rollback.
+            </div>
+          </div>
+          <div class="btn-row">
+            <label for="registryFilterSelect" style="font-size:0.8rem;font-weight:600;">Scope:</label>
+            <select id="registryFilterSelect" onchange="refreshRegistry()">
+              <option value="active">Active Project Only</option>
+              <option value="all">All Projects</option>
+            </select>
+            <button type="button" class="btn btn-primary btn-sm" onclick="triggerManualTrain()">
+              + Train New Version
+            </button>
+          </div>
+        </div>
+
+        <div tabindex="0" role="region" aria-labelledby="registryTableCaption" class="table-wrapper">
+          <table>
+            <caption id="registryTableCaption">Registered Model Versions &amp; Linked Data Snapshots</caption>
+            <thead>
+              <tr>
+                <th scope="col">Version</th>
+                <th scope="col">Project</th>
+                <th scope="col">Stage</th>
+                <th scope="col">Champion</th>
+                <th scope="col">Dynamic Best</th>
+                <th scope="col">R²</th>
+                <th scope="col">RMSE</th>
+                <th scope="col">Data Version (SHA-256)</th>
+                <th scope="col">Trigger</th>
+                <th scope="col">Trained At (UTC)</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody id="centralRegistryBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="title-with-info">
+              <h2>Active Version Leaderboard</h2>
+              <button type="button" class="info-btn" interestfor="tip-lb" popovertarget="tip-lb" popovertargetaction="show" aria-label="About Model Leaderboard">i</button>
+              <div id="tip-lb" popover="hint" class="toggletip-popover">
+                Holdout test metrics for all candidate models trained in the active version.
+              </div>
+            </div>
+          </div>
+          <div tabindex="0" role="region" aria-labelledby="leaderboardCaption" class="table-wrapper">
+            <table>
+              <caption id="leaderboardCaption">Candidate Estimators Ranked by Validation RMSE</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Model</th>
+                  <th scope="col">Role</th>
+                  <th scope="col">R²</th>
+                  <th scope="col">RMSE</th>
+                  <th scope="col">MAE</th>
+                  <th scope="col">Duration</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="title-with-info">
+              <h2>Dataset Version Lineage (DVC)</h2>
+              <button type="button" class="info-btn" interestfor="tip-dvc" popovertarget="tip-dvc" popovertargetaction="show" aria-label="About Dataset Lineage">i</button>
+              <div id="tip-dvc" popover="hint" class="toggletip-popover">
+                Immutable SHA-256 dataset fingerprints recorded whenever training data is initialized or updated via Continuous Training.
+              </div>
+            </div>
+          </div>
+          <div tabindex="0" role="region" aria-labelledby="dataVersionCaption" class="table-wrapper">
+            <table>
+              <caption id="dataVersionCaption">Tracked Dataset Snapshots (`data_versions.json`)</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Data Version</th>
+                  <th scope="col">SHA-256 Hash</th>
+                  <th scope="col">Rows</th>
+                  <th scope="col">Trigger</th>
+                  <th scope="col">Created (UTC)</th>
+                </tr>
+              </thead>
+              <tbody id="dataVersionsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       TAB 3: PROJECTS WORKSPACE (SWITCH, INITIALIZE, OR REMOVE PROJECTS)
+       ======================================================================== -->
+  <div role="tabpanel" id="panel-projects" aria-labelledby="tab-projects" hidden="until-found">
+    <div class="panel-inner">
+      <div class="card">
+        <div class="card-header">
+          <div class="title-with-info">
+            <h2>Configured ML Projects</h2>
+            <button type="button" class="info-btn" interestfor="tip-projects" popovertarget="tip-projects" popovertargetaction="show" aria-label="About Plug-and-Play Projects">i</button>
+            <div id="tip-projects" popover="hint" class="toggletip-popover">
+              Manage multiple ML pipelines from one control plane. Initialize new projects or remove projects you no longer need.
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" onclick="openInitProjectModal()">
+            + Initialize New Project
+          </button>
+        </div>
+
+        <div id="projectsCatalogGrid" class="projects-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       TAB 4: DRIFT MONITOR & AUTOMATED CONTINUOUS TRAINING (CT)
+       ======================================================================== -->
+  <div role="tabpanel" id="panel-drift" aria-labelledby="tab-drift" hidden="until-found">
+    <div class="panel-inner">
+      <div class="card">
+        <div class="card-header">
+          <div class="title-with-info">
+            <h2>Statistical Drift Monitor &amp; Automated CT</h2>
+            <button type="button" class="info-btn" interestfor="tip-drift" popovertarget="tip-drift" popovertargetaction="show" aria-label="About Statistical Drift Detection">i</button>
+            <div id="tip-drift" popover="hint" class="toggletip-popover">
+              Evaluates feature distribution shifts using Two-Sample Kolmogorov-Smirnov (KS) tests and Population Stability Index (PSI). When PSI &ge; 0.20, Continuous Training automatically snapshots a new data version, retrains all models, and hot-swaps Production.
+            </div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-outline btn-sm" onclick="simulateDrift(false)">
+              &#10003; Simulate Normal Traffic
+            </button>
+            <button type="button" class="btn btn-warning btn-sm" onclick="simulateDrift(true)">
+              &#9888; Inject Drift &amp; Trigger CT
+            </button>
+          </div>
+        </div>
+
+        <div class="kpi-strip" style="margin-bottom: 14px;">
+          <div class="kpi-card">
+            <div class="kpi-label"><span>Drift Status</span></div>
+            <div class="kpi-value" id="driftStatusBadge">✓ STABLE</div>
+            <div class="kpi-sub">Gate: PSI &ge; 0.20 or KS p &lt; 0.01</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label"><span>Max Feature PSI</span></div>
+            <div class="kpi-value" id="driftMaxPsi">0.000</div>
+            <div class="kpi-sub" id="driftFeaturesRatio">Drifted Features: 0</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label"><span>CT Orchestrator</span></div>
+            <div class="kpi-value" id="driftCtAction">Standby</div>
+            <div class="kpi-sub">Zero-downtime auto-promotion</div>
+          </div>
+        </div>
+
+        <div tabindex="0" role="region" aria-labelledby="driftBreakdownCaption" class="table-wrapper">
+          <table>
+            <caption id="driftBreakdownCaption">Per-Feature KS-Test &amp; PSI Drift Breakdown</caption>
+            <thead>
+              <tr>
+                <th scope="col">Feature</th>
+                <th scope="col">Reference Mean</th>
+                <th scope="col">Current Mean</th>
+                <th scope="col">Shift</th>
+                <th scope="col">KS Stat</th>
+                <th scope="col">KS p-value</th>
+                <th scope="col">PSI</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody id="driftTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="title-with-info">
+            <h2>Continuous Training (CT) Event Log</h2>
+            <button type="button" class="info-btn" interestfor="tip-ct-log" popovertarget="tip-ct-log" popovertargetaction="show" aria-label="About CT Event Log">i</button>
+            <div id="tip-ct-log" popover="hint" class="toggletip-popover">
+              History of automated retraining runs triggered by statistical drift thresholds.
+            </div>
+          </div>
+        </div>
+        <div tabindex="0" role="region" aria-labelledby="ctHistoryCaption" class="table-wrapper">
+          <table>
+            <caption id="ctHistoryCaption">Automated Retraining Audit Trail (`logs/ct_events_history.json`)</caption>
+            <thead>
+              <tr>
+                <th scope="col">Event ID</th>
+                <th scope="col">Project</th>
+                <th scope="col">Promoted Version</th>
+                <th scope="col">Champion Model</th>
+                <th scope="col">Data Version</th>
+                <th scope="col">Max PSI</th>
+                <th scope="col">Hot-Reload</th>
+                <th scope="col">Timestamp (UTC)</th>
+              </tr>
+            </thead>
+            <tbody id="ctHistoryBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       TAB 5: CONTAINER SERVICES & RUNTIME SLOTS
+       ======================================================================== -->
+  <div role="tabpanel" id="panel-containers" aria-labelledby="tab-containers" hidden="until-found">
+    <div class="panel-inner">
+      <div class="card">
+        <div class="card-header">
+          <div class="title-with-info">
+            <h2>Docker Compose Microservice Topology</h2>
+            <button type="button" class="info-btn" interestfor="tip-containers" popovertarget="tip-containers" popovertargetaction="show" aria-label="About Container Services">i</button>
+            <div id="tip-containers" popover="hint" class="toggletip-popover">
+              Shows the containerized services defined in `docker-compose.yml` along with Blue/Green zero-downtime routing controls.
+            </div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-outline btn-sm" onclick="switchSlot('blue')">
+              ◆ Activate Blue Slot
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" onclick="switchSlot('green')">
+              ▲ Activate Green Slot
+            </button>
+            <button type="button" class="btn btn-success btn-sm" onclick="hotReloadModel()">
+              &#8635; Hot-Reload Model
+            </button>
+          </div>
+        </div>
+
+        <div tabindex="0" role="region" aria-labelledby="containersTableCaption" class="table-wrapper">
+          <table>
+            <caption id="containersTableCaption">Service Containers, Ports &amp; Health Probes</caption>
+            <thead>
+              <tr>
+                <th scope="col">Service Name</th>
+                <th scope="col">Role</th>
+                <th scope="col">Port</th>
+                <th scope="col">Health Endpoint</th>
+                <th scope="col">Status</th>
+                <th scope="col">Logs Command</th>
+              </tr>
+            </thead>
+            <tbody id="containersTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 1: INITIALIZE NEW PLUG-AND-PLAY ML PROJECT
+       ======================================================================== -->
+  <dialog id="initProjectDialog" aria-labelledby="initDialogTitle" closedby="any">
+    <div class="dialog-header">
+      <h2 id="initDialogTitle">Initialize New ML Project</h2>
+    </div>
+    <form id="initProjectForm" onsubmit="submitNewProject(event)">
       <div class="form-grid">
-        <div><label>Air Temp (°C)</label><input id="inp_temp" type="number" step="0.1" value="31.2"></div>
-        <div><label>Relative Humidity (%)</label><input id="inp_rh" type="number" step="1" value="44.0"></div>
-        <div><label>Wind Speed 2m (m/s)</label><input id="inp_wind" type="number" step="0.1" value="3.8"></div>
-        <div><label>Solar Radiation (MJ/m²)</label><input id="inp_rad" type="number" step="0.1" value="24.5"></div>
-        <div><label>Pressure (kPa)</label><input id="inp_press" type="number" step="0.1" value="98.4"></div>
-        <div><label>Water Temp (°C)</label><input id="inp_wtemp" type="number" step="0.1" value="27.5"></div>
-      </div>
-      <button class="btn-primary" style="width:100%" onclick="runPrediction()">Run Ensemble Prediction &amp; Log Telemetry</button>
-      <div class="stat-row" style="margin-top:12px;">
-        <div class="stat-box">
-          <div class="stat-label">Ensemble Prediction</div>
-          <div class="stat-val" id="predEvap" style="color:var(--green)">-- mm/day</div>
+        <div class="field-group">
+          <label for="newProjId">Project ID (slug)</label>
+          <input id="newProjId" type="text" required placeholder="e.g. car_price" value="car_price" autofocus />
         </div>
-        <div class="stat-box">
-          <div class="stat-label">FAO-56 Baseline / VPD</div>
-          <div class="stat-val" id="predBaseline">--</div>
+        <div class="field-group">
+          <label for="newProjName">Project Name</label>
+          <input id="newProjName" type="text" required placeholder="e.g. Used Car Price Predictor" value="Used Car Price Predictor" />
         </div>
       </div>
-      <div style="font-size:0.78rem;color:var(--muted);" id="predMeta"></div>
-    </div>
+      <div class="form-grid">
+        <div class="field-group">
+          <label for="newProjTarget">Target Column</label>
+          <input id="newProjTarget" type="text" required placeholder="e.g. resale_price_k" value="resale_price_k" />
+        </div>
+        <div class="field-group">
+          <label for="newProjUnit">Target Unit</label>
+          <input id="newProjUnit" type="text" required placeholder="e.g. $1,000 USD" value="$1,000 USD" />
+        </div>
+      </div>
+      <div class="field-group" style="margin-bottom: 12px;">
+        <label for="newProjFeatures">Input Features (comma-separated)</label>
+        <input id="newProjFeatures" type="text" required value="engine_hp, mileage_km_k, car_age_years, fuel_efficiency_kmpl" />
+      </div>
+      <div class="field-group" style="margin-bottom: 16px;">
+        <label for="newProjDesc">Description</label>
+        <input id="newProjDesc" type="text" value="Predict used car resale value from horsepower, mileage, age, and fuel efficiency." />
+      </div>
+      <div class="btn-row" style="justify-content: flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeInitProjectModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">&#10003; Initialize &amp; Train v1.0</button>
+      </div>
+    </form>
+  </dialog>
 
-    <!-- Card 3: Drift Monitor & Automated Continuous Training (CT) -->
-    <div class="card">
-      <h2>3. Statistical Drift Monitor &amp; Continuous Training (CT)</h2>
-      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;">
-        Monitors incoming micro-climate distribution via <b>KS-Test</b> &amp; <b>Population Stability Index (PSI)</b>.
-        When drift &gt; threshold, fires the CT webhook, retrains the ensemble on Cloudflare R2 / DVC data, and hot-swaps the new model with zero downtime.
-      </p>
-      <div class="btn-row">
-        <button class="btn-outline" onclick="simulateDrift(false)">Simulate Normal Traffic</button>
-        <button class="btn-Warning" onclick="simulateDrift(true)">Inject Micro-Climate Drift &amp; Trigger CT</button>
-      </div>
-      <div class="stat-row" style="margin-top:12px;">
-        <div class="stat-box">
-          <div class="stat-label">Drift Status</div>
-          <div class="stat-val" id="driftStatus">Checking...</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Max Feature PSI</div>
-          <div class="stat-val" id="driftPsi">--</div>
-        </div>
-      </div>
-      <table>
-        <thead>
-          <tr><th>Feature</th><th>Ref Mean</th><th>Prod Mean</th><th>PSI</th><th>Status</th></tr>
-        </thead>
-        <tbody id="driftTableBody"></tbody>
-      </table>
+  <!-- ========================================================================
+       MODAL 2: CONFIRM REMOVE PROJECT
+       ======================================================================== -->
+  <dialog id="deleteProjectDialog" aria-labelledby="deleteDialogTitle" closedby="any">
+    <div class="dialog-header">
+      <h2 id="deleteDialogTitle">Remove Project from Pipeline?</h2>
     </div>
-  </div>
-
-  <!-- Recent Telemetry & CT History -->
-  <div class="card">
-    <h2>4. Production Telemetry Stream &amp; Automated CT Event Log</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Timestamp (UTC)</th>
-          <th>Source</th>
-          <th>Temp (°C)</th>
-          <th>RH (%)</th>
-          <th>Wind (m/s)</th>
-          <th>Predicted (mm/d)</th>
-          <th>Model Version</th>
-          <th>Slot</th>
-          <th>Latency</th>
-        </tr>
-      </thead>
-      <tbody id="logsTableBody"></tbody>
-    </table>
-  </div>
+    <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 18px;" id="deleteDialogMessage">
+      Are you sure you want to remove this project and its registered artifacts?
+    </p>
+    <div class="btn-row" style="justify-content: flex-end;">
+      <button type="button" class="btn btn-outline" id="cancelDeleteBtn" autofocus onclick="closeDeleteProjectModal()">
+        Cancel
+      </button>
+      <button type="button" class="btn btn-danger" onclick="confirmDeleteProject()">
+        Remove Project
+      </button>
+    </div>
+  </dialog>
 
   <script>
+    let currentState = null;
+    let workflowData = null;
+    let selectedWorkflowNodeId = null;
+    let pendingDeleteProjectId = null;
+
+    // ------------------------------------------------------------------------
+    // 1. Accessible Wiring for Interest Invoker Toggletips (`interest-triggered-tooltips` guide)
+    // ------------------------------------------------------------------------
+    const ownedToggletips = new Set();
+
+    function wireInterestHints() {
+      for (const trigger of document.querySelectorAll('[interestfor]')) {
+        const targetId = trigger.getAttribute('interestfor');
+        const hint = targetId ? document.getElementById(targetId) : null;
+        if (!hint || hint.getAttribute('popover') !== 'hint') continue;
+
+        if (!hint.hasAttribute('role')) {
+          hint.setAttribute('role', 'tooltip');
+        }
+        const opensOnActivate = trigger.getAttribute('popovertarget') === targetId;
+        if (opensOnActivate && !trigger.hasAttribute('aria-expanded')) {
+          trigger.setAttribute('aria-expanded', hint.matches(':popover-open') ? 'true' : 'false');
+          ownedToggletips.add(trigger);
+        } else if (!opensOnActivate && !trigger.hasAttribute('aria-describedby')) {
+          trigger.setAttribute('aria-describedby', targetId);
+        }
+      }
+    }
+
+    document.addEventListener('toggle', (e) => {
+      const pop = e.target;
+      if (!pop || !pop.id) return;
+      const isOpen = e.newState === 'open';
+      for (const trig of ownedToggletips) {
+        if (trig.getAttribute('interestfor') === pop.id) {
+          trig.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        }
+      }
+    }, true);
+
+    // Fallback when `popover="hint"` is treated as `"manual"` by browsers lacking native `"hint"`
+    const hintProbe = document.createElement('div');
+    hintProbe.popover = 'hint';
+    if (hintProbe.popover !== 'hint') {
+      document.addEventListener('beforetoggle', ({ target, newState }) => {
+        const toggletip = target.getAttribute('popover') === 'hint'
+          && document.querySelector(`[popovertarget="${CSS.escape(target.id)}"]`);
+        if (newState === 'open' && toggletip) {
+          target.popover = 'auto';
+        }
+      }, true);
+    }
+
+    wireInterestHints();
+
+    // ------------------------------------------------------------------------
+    // 2. Accessible Tablist (`tabs` guide)
+    // ------------------------------------------------------------------------
+    const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+    const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
+
+    function selectTab(selectedTab) {
+      for (const tab of tabs) {
+        const isSelected = tab === selectedTab;
+        tab.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+        tab.toggleAttribute('focusgroupstart', isSelected);
+      }
+      for (const panel of panels) {
+        const isMatch = panel.getAttribute('aria-labelledby') === selectedTab.id;
+        if (isMatch) {
+          panel.removeAttribute('hidden');
+          panel.setAttribute('tabindex', '0');
+        } else {
+          panel.setAttribute('hidden', 'until-found');
+          panel.removeAttribute('tabindex');
+        }
+      }
+      selectedTab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }
+
+    tabs.forEach((tab, idx) => {
+      tab.addEventListener('click', () => selectTab(tab));
+      tab.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          const dir = e.key === 'ArrowRight' ? 1 : -1;
+          const nextTab = tabs[(idx + dir + tabs.length) % tabs.length];
+          nextTab.focus();
+          selectTab(nextTab);
+        }
+      });
+    });
+
+    panels.forEach((panel) => {
+      panel.addEventListener('beforematch', () => {
+        const tab = document.getElementById(panel.getAttribute('aria-labelledby'));
+        if (tab) selectTab(tab);
+      });
+    });
+
+    // ------------------------------------------------------------------------
+    // 3. Native <dialog> Modals (`dialog` guide)
+    // ------------------------------------------------------------------------
+    const initDialog = document.getElementById('initProjectDialog');
+    const deleteDialog = document.getElementById('deleteProjectDialog');
+
+    for (const dlg of [initDialog, deleteDialog]) {
+      dlg.addEventListener('close', () => { dlg.returnValue = ''; });
+    }
+
+    if (!('closedBy' in HTMLDialogElement.prototype)) {
+      const outside = (e, dialog) => {
+        const r = dialog.getBoundingClientRect();
+        return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+      };
+      for (const dialog of document.querySelectorAll('dialog[closedby="any"]')) {
+        let pressedOutside = false;
+        dialog.addEventListener('pointerdown', (e) => { pressedOutside = outside(e, dialog); });
+        dialog.addEventListener('pointerup', (e) => {
+          if (pressedOutside && outside(e, dialog)) dialog.close();
+        });
+      }
+    }
+
+    function openInitProjectModal() { initDialog.showModal(); }
+    function closeInitProjectModal() { initDialog.close(); }
+
+    function promptDeleteProject(projectId) {
+      if (!projectId) return;
+      const totalProjs = (currentState && currentState.available_projects) ? currentState.available_projects.length : 1;
+      if (totalProjs <= 1) {
+        showBanner('⚠ Cannot remove the only remaining project in the pipeline.');
+        return;
+      }
+      pendingDeleteProjectId = projectId;
+      document.getElementById('deleteDialogMessage').textContent =
+        `Remove project '${projectId}', its dataset snapshots, and its model versions from the pipeline?`;
+      deleteDialog.showModal();
+    }
+
+    function closeDeleteProjectModal() {
+      pendingDeleteProjectId = null;
+      deleteDialog.close();
+    }
+
+    async function confirmDeleteProject() {
+      const pid = pendingDeleteProjectId;
+      closeDeleteProjectModal();
+      if (!pid) return;
+
+      setWorkflowRunning('central_registry', `Removing project '${pid}'...`);
+      const res = await fetch(`/projects/${encodeURIComponent(pid)}`, { method: 'DELETE' });
+      const out = await res.json();
+      if (!res.ok) {
+        showBanner(`⚠ ${out.detail || 'Failed to remove project'}`);
+        await refreshWorkflow();
+        return;
+      }
+      showBanner(`✓ ${out.message}`);
+      await refreshAll(true);
+      await runPrediction();
+    }
+
     function showBanner(msg) {
       const el = document.getElementById('statusBanner');
       el.textContent = msg;
       el.style.display = 'block';
-      setTimeout(() => { el.style.display = 'none'; }, 6000);
+      clearTimeout(window._bannerTimer);
+      window._bannerTimer = setTimeout(() => { el.style.display = 'none'; }, 5500);
     }
 
-    async function refreshStatus() {
+    // ------------------------------------------------------------------------
+    // 4. Interactive Pipeline Workflow DAG Viewer
+    // ------------------------------------------------------------------------
+    async function refreshWorkflow() {
+      const res = await fetch('/workflow/graph');
+      workflowData = await res.json();
+      renderWorkflowGraph(workflowData);
+    }
+
+    function setWorkflowRunning(stageId, statusText) {
+      const badge = document.getElementById('wfLiveBadge');
+      badge.textContent = `↻ ${statusText || 'Running Pipeline...'}`;
+      badge.className = 'badge badge-blue';
+      if (!workflowData) return;
+      const cloned = JSON.parse(JSON.stringify(workflowData));
+      for (const n of cloned.nodes) {
+        if (n.id === stageId) n.status = 'running';
+      }
+      renderWorkflowGraph(cloned);
+    }
+
+    function renderWorkflowGraph(wf) {
+      if (!wf) return;
+      document.getElementById('wfFileName').textContent = wf.workflow_file || 'ci-cd-ct-pipeline.yml';
+      document.getElementById('wfTriggerText').textContent = wf.trigger || 'on: push';
+
+      const anyRunning = (wf.nodes || []).some((n) => n.status === 'running');
+      const anyWarning = (wf.nodes || []).some((n) => n.status === 'warning');
+      const badge = document.getElementById('wfLiveBadge');
+      if (!anyRunning) {
+        if (anyWarning) {
+          badge.textContent = '⚠ Drift Retrain Executed';
+          badge.className = 'badge badge-amber';
+        } else {
+          badge.textContent = '✓ All Stages Healthy';
+          badge.className = 'badge badge-green';
+        }
+      }
+
+      const canvas = document.getElementById('workflowCanvas');
+      const nodes = wf.nodes || [];
+      canvas.innerHTML = nodes.map((node, i) => {
+        const iconChar = node.status === 'running' ? '↻' : (node.status === 'warning' ? '!' : '✓');
+        const isSelected = selectedWorkflowNodeId === node.id;
+        const edgeHtml = i < nodes.length - 1 ? `
+          <div class="wf-edge" aria-hidden="true">
+            <span class="wf-port left"></span>
+            <span class="wf-edge-line"></span>
+            <span class="wf-port right"></span>
+          </div>
+        ` : '';
+
+        return `
+          <div class="wf-stage-wrap" role="listitem">
+            <button
+              type="button"
+              class="wf-node"
+              aria-pressed="${isSelected ? 'true' : 'false'}"
+              onclick="inspectWorkflowNode('${node.id}')"
+            >
+              <div class="wf-node-left">
+                <span class="wf-icon ${node.status}" aria-hidden="true">${iconChar}</span>
+                <div class="wf-text">
+                  <span class="wf-title">${node.title}</span>
+                  <span class="wf-sub">${node.subtitle}</span>
+                </div>
+              </div>
+              <span class="wf-duration">${node.duration}</span>
+            </button>
+            ${edgeHtml}
+          </div>
+        `;
+      }).join('');
+
+      if (selectedWorkflowNodeId) {
+        const activeNode = nodes.find((n) => n.id === selectedWorkflowNodeId);
+        if (activeNode) renderWorkflowInspector(activeNode);
+      }
+    }
+
+    function inspectWorkflowNode(nodeId) {
+      if (selectedWorkflowNodeId === nodeId) {
+        closeWorkflowInspector();
+        return;
+      }
+      selectedWorkflowNodeId = nodeId;
+      renderWorkflowGraph(workflowData);
+    }
+
+    function renderWorkflowInspector(node) {
+      const box = document.getElementById('workflowInspector');
+      const content = document.getElementById('workflowInspectorContent');
+      const details = node.details || {};
+      content.innerHTML = Object.keys(details).map((k) => `
+        <div>
+          <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;color:var(--text-secondary);display:block;">
+            ${k.replace(/_/g, ' ')}
+          </span>
+          <span style="font-weight:600;color:var(--text);">${details[k]}</span>
+        </div>
+      `).join('');
+      box.classList.add('open');
+    }
+
+    function closeWorkflowInspector() {
+      selectedWorkflowNodeId = null;
+      document.getElementById('workflowInspector').classList.remove('open');
+      renderWorkflowGraph(workflowData);
+    }
+
+    async function runFullPipelineCheck() {
+      const stages = ['data_ingest', 'schema_gate', 'model_training', 'central_registry', 'cd_serving', 'drift_ct_loop'];
+      for (const st of stages) {
+        setWorkflowRunning(st, `Verifying ${st.replace(/_/g, ' ')}...`);
+        await new Promise((r) => setTimeout(r, 140));
+      }
+      await refreshAll(false);
+      showBanner('✓ Full CI/CD/CT pipeline health verification passed.');
+    }
+
+    // ------------------------------------------------------------------------
+    // 5. Dynamic Feature Form & Core Data Sync
+    // ------------------------------------------------------------------------
+    function renderFeatureInputs(projectSpec) {
+      const container = document.getElementById('dynamicFeatureInputs');
+      const features = projectSpec.features || {};
+      document.getElementById('servingFormTitle').textContent =
+        `Inference Input — ${projectSpec.name}`;
+
+      container.innerHTML = Object.keys(features).map((fname) => {
+        const f = features[fname];
+        const step = (f.max - f.min) > 200 ? '1' : '0.1';
+        return `
+          <div class="field-group">
+            <label for="feat_${fname}">
+              <span>${f.label || fname}</span>
+              <span style="font-size:0.7rem;font-weight:500;">[${f.min}–${f.max}]</span>
+            </label>
+            <input
+              id="feat_${fname}"
+              data-feature="${fname}"
+              type="number"
+              step="${step}"
+              min="${f.min}"
+              max="${f.max}"
+              value="${f.default}"
+            />
+          </div>
+        `;
+      }).join('');
+    }
+
+    function resetFeatureDefaults() {
+      if (currentState && currentState.active_project) {
+        renderFeatureInputs(currentState.active_project);
+      }
+    }
+
+    async function refreshStatus(rebuildInputs = false) {
       const res = await fetch('/cloud/status');
       const data = await res.json();
-      const slotEl = document.getElementById('slotBadge');
-      slotEl.textContent = 'SLOT: ' + data.deployment_slot.toUpperCase();
-      slotEl.className = 'badge ' + (data.deployment_slot === 'green' ? 'slot-green' : 'slot-blue');
-      document.getElementById('containerBadge').textContent = 'Container: ' + data.container_id;
-      document.getElementById('versionBadge').textContent = 'Model: ' + (data.active_model.version || 'v1.0');
-      document.getElementById('modelName').textContent = data.active_model.model_name || 'Ensemble';
-      const m = data.active_model.metrics || {};
-      document.getElementById('modelMetrics').textContent = `${data.active_model.version || 'v1'} (R²=${m.r2 ?? '--'})`;
-      document.getElementById('obsStats').textContent = `${data.observability.total_requests} reqs / ${data.observability.p95_latency_ms} ms`;
-      document.getElementById('reloadCount').textContent = data.hot_reload_count;
+      const prevProjectId = currentState ? currentState.active_project_id : null;
+      currentState = data;
 
-      const lb = data.active_model.leaderboard || [];
-      document.getElementById('leaderboardBody').innerHTML = lb.map(item => `
+      const projSelect = document.getElementById('projectSelect');
+      projSelect.innerHTML = (data.available_projects || []).map((p) => `
+        <option value="${p.project_id}" ${p.project_id === data.active_project_id ? 'selected' : ''}>
+          ${p.name} (${p.project_id})
+        </option>
+      `).join('');
+
+      const slotEl = document.getElementById('slotBadge');
+      const isGreen = data.deployment_slot === 'green';
+      slotEl.textContent = isGreen ? '▲ SLOT: GREEN' : '◆ SLOT: BLUE';
+      slotEl.className = 'badge ' + (isGreen ? 'badge-green' : 'badge-blue');
+
+      const activeProj = data.active_project || {};
+      const activeModel = data.active_model || {};
+      const m = activeModel.metrics || {};
+      const dv = activeModel.data_version || {};
+
+      document.getElementById('kpiProjectName').textContent = activeProj.name || data.active_project_id;
+      document.getElementById('kpiTargetInfo').textContent =
+        `Target: ${activeProj.target || '--'} (${activeProj.target_unit || 'units'})`;
+      document.getElementById('kpiModelVersion').textContent =
+        `${activeModel.version || 'v1.0'} — ${activeModel.model_name || 'VotingEnsemble'}`;
+      document.getElementById('kpiModelMetrics').textContent =
+        `R²: ${m.r2 ?? '--'} | RMSE: ${m.rmse ?? '--'} | Dynamic: ${activeModel.dynamic_best_model || '--'}`;
+      document.getElementById('kpiDataVersion').textContent = dv.data_version || 'data-v1.0';
+      document.getElementById('kpiDataHash').textContent =
+        `SHA-256: ${dv.sha256_short || '--'} | ${dv.row_count || '--'} rows`;
+      document.getElementById('kpiTelemetry').textContent =
+        `${data.observability.total_requests} reqs (${data.observability.avg_latency_ms} ms)`;
+      document.getElementById('kpiReloads').textContent =
+        `Hot-Reloads: ${data.hot_reload_count}`;
+      document.getElementById('servingVersionPill').textContent =
+        `${data.active_project_id} • ${activeModel.version || 'v1.0'}`;
+
+      if (rebuildInputs || prevProjectId !== data.active_project_id) {
+        renderFeatureInputs(activeProj);
+      }
+
+      const lb = activeModel.leaderboard || [];
+      document.getElementById('leaderboardBody').innerHTML = lb.map((row) => `
         <tr>
-          <td><b>${item.model_name}</b></td>
-          <td>${item.rmse}</td>
-          <td>${item.mae}</td>
-          <td>${item.r2}</td>
+          <th scope="row">${row.model_name}</th>
+          <td><span class="badge ${row.model_type === 'Ensemble' ? 'badge-green' : 'badge-blue'}">${row.model_type || 'Model'}</span></td>
+          <td><b>${row.r2}</b></td>
+          <td>${row.rmse}</td>
+          <td>${row.mae}</td>
+          <td>${row.train_duration_sec}s</td>
+        </tr>
+      `).join('');
+
+      const totalProjs = (data.available_projects || []).length;
+      document.getElementById('projectsCatalogGrid').innerHTML = (data.available_projects || []).map((p) => {
+        const isActive = p.project_id === data.active_project_id;
+        const featList = Object.keys(p.features || {}).join(', ');
+        return `
+          <div class="project-card ${isActive ? 'active-card' : ''}">
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <h3 style="font-size:0.95rem;font-weight:700;">${p.name}</h3>
+                <span class="badge ${isActive ? 'badge-blue' : ''}">${isActive ? '● ACTIVE' : p.project_id}</span>
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:8px;">${p.description || ''}</p>
+              <div style="font-size:0.76rem;color:var(--text-secondary);">
+                <b>Features:</b> ${featList}<br/>
+                <b>Target:</b> ${p.target} (${p.target_unit || 'units'})
+              </div>
+            </div>
+            <div class="btn-row" style="justify-content:space-between;margin-top:4px;">
+              <button type="button" class="btn ${isActive ? 'btn-primary' : 'btn-outline'} btn-sm" onclick="onSelectProject('${p.project_id}')">
+                ${isActive ? '✓ Active Project' : 'Switch Project'}
+              </button>
+              ${totalProjs > 1 ? `
+                <button type="button" class="btn btn-danger btn-sm" onclick="promptDeleteProject('${p.project_id}')">
+                  Remove
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function runPrediction() {
+      setWorkflowRunning('cd_serving', 'Executing Dual-Mode CD Inference...');
+      const inputs = Array.from(document.querySelectorAll('#dynamicFeatureInputs input[data-feature]'));
+      const features = {};
+      for (const inp of inputs) {
+        features[inp.getAttribute('data-feature')] = parseFloat(inp.value);
+      }
+
+      const servingMode = document.getElementById('servingModeSelect').value;
+      const dynamicStrategy = document.getElementById('dynamicStrategySelect').value;
+
+      const res = await fetch('/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          project_id: currentState ? currentState.active_project_id : null,
+          serving_mode: servingMode,
+          dynamic_strategy: dynamicStrategy,
+          features
+        })
+      });
+      const out = await res.json();
+      const unit = out.target_unit || '';
+
+      document.getElementById('predLatencyBadge').textContent =
+        `Slot: ${out.deployment_slot.toUpperCase()} • ${out.inference_latency_ms} ms`;
+
+      const dyn = out.dynamic_output || {};
+      const ens = out.ensemble_output || {};
+
+      document.getElementById('dynModelBadge').textContent = dyn.selected_model || '--';
+      document.getElementById('dynPredValue').textContent = `${dyn.prediction} ${unit}`;
+      document.getElementById('dynReasonText').textContent = dyn.selection_reason || '';
+
+      document.getElementById('ensAgreementBadge').textContent = `Agreement: ${ens.agreement_score_pct}%`;
+      document.getElementById('ensPredValue').textContent = `${ens.prediction} ${unit}`;
+      const ci = ens.confidence_interval_95 || ['--', '--'];
+      document.getElementById('ensCiText').textContent =
+        `95% CI: [${ci[0]}, ${ci[1]}] ${unit} (±${ens.model_spread_std})`;
+
+      document.getElementById('dynamicOutputCard').style.opacity = (servingMode === 'ensemble') ? '0.55' : '1.0';
+      document.getElementById('ensembleOutputCard').style.opacity = (servingMode === 'dynamic') ? '0.55' : '1.0';
+
+      const modelArch = {
+        LinearRegression: 'Standardized Ordinary Least Squares',
+        DecisionTree: 'CART Recursive Partitioning (depth=6)',
+        RandomForest: 'Bagging Ensemble (80 trees)',
+        GradientBoosting: 'Stagewise Additive Boosting (80 trees)'
+      };
+
+      const votes = ens.member_predictions || {};
+      document.getElementById('memberVotesBody').innerHTML = Object.keys(votes).map((mName) => `
+        <tr>
+          <th scope="row">${mName} ${mName === dyn.selected_model ? '<span class="badge badge-blue">★ Dynamic</span>' : ''}</th>
+          <td><b>${votes[mName]} ${unit}</b></td>
+          <td>${modelArch[mName] || 'Base Estimator'}</td>
+        </tr>
+      `).join('');
+
+      await refreshStatus(false);
+      await refreshLogs();
+      await refreshWorkflow();
+    }
+
+    async function refreshRegistry() {
+      const filterMode = document.getElementById('registryFilterSelect').value;
+      const pid = (filterMode === 'active' && currentState) ? currentState.active_project_id : '';
+      const url = pid ? `/registry/models?project_id=${encodeURIComponent(pid)}` : '/registry/models';
+      const res = await fetch(url);
+      const data = await res.json();
+
+      document.getElementById('centralRegistryBody').innerHTML = (data.versions || []).map((v) => {
+        const isProd = v.stage === 'Production';
+        const dv = v.data_version || {};
+        const m = v.metrics || {};
+        return `
+          <tr>
+            <th scope="row">${v.version}</th>
+            <td><span class="code-snippet">${v.project_id}</span></td>
+            <td>
+              <span class="badge ${isProd ? 'badge-green' : ''}">
+                ${isProd ? '● PRODUCTION' : '○ ARCHIVED'}
+              </span>
+            </td>
+            <td><b>${v.model_name}</b></td>
+            <td>${v.dynamic_best_model || '--'}</td>
+            <td><b>${m.r2 ?? '--'}</b></td>
+            <td>${m.rmse ?? '--'}</td>
+            <td><span class="code-snippet">${dv.data_version || 'data-v1.0'} (${dv.sha256_short || '--'})</span></td>
+            <td>${v.trigger_reason}</td>
+            <td>${(v.trained_at_utc || '').slice(0, 19).replace('T', ' ')}</td>
+            <td>
+              ${isProd
+                ? '<span style="font-size:0.76rem;color:var(--green);font-weight:600;">✓ Active</span>'
+                : `<button type="button" class="btn btn-outline btn-sm" onclick="activateVersion('${v.project_id}', '${v.version}')">Activate</button>`
+              }
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('dataVersionsBody').innerHTML = (data.data_versions || []).map((dv) => `
+        <tr>
+          <th scope="row">${dv.data_version}</th>
+          <td><span class="code-snippet">${dv.sha256_short}</span></td>
+          <td>${dv.row_count} (${dv.feature_count} cols)</td>
+          <td>${dv.trigger_reason}</td>
+          <td>${(dv.created_at_utc || '').slice(0, 19).replace('T', ' ')}</td>
         </tr>
       `).join('');
     }
 
+    async function activateVersion(projectId, version) {
+      setWorkflowRunning('central_registry', `Activating ${projectId} ${version}...`);
+      const res = await fetch('/registry/activate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ project_id: projectId, version })
+      });
+      const out = await res.json();
+      showBanner(`✓ ${out.message}`);
+      await refreshAll(true);
+    }
+
+    async function triggerManualTrain() {
+      const pid = currentState ? currentState.active_project_id : 'house_price';
+      setWorkflowRunning('model_training', `Training new version for '${pid}'...`);
+      const res = await fetch('/projects/train', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ project_id: pid, trigger_reason: 'manual_registry_training' })
+      });
+      const out = await res.json();
+      showBanner(`✓ ${out.message}`);
+      await refreshAll(false);
+    }
+
+    async function onSelectProject(projectId) {
+      setWorkflowRunning('data_ingest', `Switching pipeline to '${projectId}'...`);
+      await fetch('/projects/switch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ project_id: projectId })
+      });
+      await refreshAll(true);
+      await runPrediction();
+    }
+
+    async function submitNewProject(e) {
+      e.preventDefault();
+      const project_id = document.getElementById('newProjId').value.trim();
+      const name = document.getElementById('newProjName').value.trim();
+      const target = document.getElementById('newProjTarget').value.trim();
+      const target_unit = document.getElementById('newProjUnit').value.trim();
+      const description = document.getElementById('newProjDesc').value.trim();
+      const rawFeatures = document.getElementById('newProjFeatures').value;
+      const features = rawFeatures.split(',').map((s) => s.trim()).filter(Boolean);
+
+      closeInitProjectModal();
+      setWorkflowRunning('model_training', `Initializing '${project_id}' & training v1.0...`);
+
+      const res = await fetch('/projects/init', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          project_id,
+          name,
+          description,
+          features,
+          target,
+          target_unit
+        })
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        showBanner(`⚠ Error: ${err.detail || 'Could not initialize project'}`);
+        await refreshWorkflow();
+        return;
+      }
+      const out = await res.json();
+      showBanner(`✓ ${out.message} (${out.initial_model_version.version})`);
+      await refreshAll(true);
+      await runPrediction();
+    }
+
     async function refreshLogs() {
-      const res = await fetch('/logs/recent?limit=10');
+      const res = await fetch('/logs/recent?limit=12');
       const data = await res.json();
-      document.getElementById('logsTableBody').innerHTML = (data.recent_predictions || []).map(r => `
+
+      document.getElementById('logsTableBody').innerHTML = (data.recent_predictions || []).map((r) => `
         <tr>
-          <td>${(r.timestamp_utc || '').slice(11, 19)}</td>
-          <td>${r.source}</td>
-          <td>${r.temperature_c}</td>
-          <td>${r.relative_humidity_pct}</td>
-          <td>${r.wind_speed_ms}</td>
-          <td><b>${r.evaporation_rate_mm_day}</b></td>
-          <td>${r.model_version}</td>
+          <th scope="row">${(r.timestamp_utc || '').slice(11, 19)}</th>
+          <td><span class="code-snippet">${r.project_id || 'house_price'}</span></td>
+          <td>${r.serving_mode || 'both'}</td>
+          <td>${r.dynamic_prediction ?? r.prediction} (${r.dynamic_model || '--'})</td>
+          <td><b>${r.ensemble_prediction ?? r.prediction}</b></td>
+          <td><span class="badge badge-purple">${r.model_version}</span></td>
+          <td><span class="code-snippet">${r.data_version || 'data-v1.0'}</span></td>
           <td>${r.deployment_slot}</td>
           <td>${r.inference_latency_ms} ms</td>
         </tr>
       `).join('');
-    }
 
-    async function runPrediction() {
-      const payload = {
-        temperature_c: parseFloat(document.getElementById('inp_temp').value),
-        relative_humidity_pct: parseFloat(document.getElementById('inp_rh').value),
-        wind_speed_ms: parseFloat(document.getElementById('inp_wind').value),
-        solar_radiation_mj: parseFloat(document.getElementById('inp_rad').value),
-        pressure_kpa: parseFloat(document.getElementById('inp_press').value),
-        water_temp_c: parseFloat(document.getElementById('inp_wtemp').value),
-        reservoir_area_km2: 12.5
-      };
-      const res = await fetch('/predict', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(payload)
-      });
-      const out = await res.json();
-      document.getElementById('predEvap').textContent = `${out.evaporation_rate_mm_day} mm/day`;
-      document.getElementById('predBaseline').textContent = `${out.fao56_baseline_mm_day} mm/d | VPD ${out.vapor_pressure_deficit_kpa} kPa`;
-      document.getElementById('predMeta').textContent =
-        `Water Loss: ${out.estimated_water_loss_m3_day} m³/day | Served by ${out.model_name} (${out.model_version}) on [${out.deployment_slot.toUpperCase()}] in ${out.inference_latency_ms} ms`;
-      await refreshStatus();
-      await refreshLogs();
+      document.getElementById('ctHistoryBody').innerHTML = (data.ct_events || []).map((ev) => `
+        <tr>
+          <th scope="row">${ev.event_id}</th>
+          <td><span class="code-snippet">${ev.project_id || 'house_price'}</span></td>
+          <td><span class="badge badge-green">${ev.promoted_model_version || 'v2.0'}</span></td>
+          <td><b>${ev.promoted_model_name || 'VotingEnsemble'}</b></td>
+          <td><span class="code-snippet">${ev.data_version || 'data-v2.0'}</span></td>
+          <td>${ev.drift_summary ? ev.drift_summary.max_psi : '--'}</td>
+          <td>${ev.zero_downtime_hot_reload ? '✓ Yes' : 'No'}</td>
+          <td>${(ev.triggered_at_utc || '').slice(0, 19).replace('T', ' ')}</td>
+        </tr>
+      `).join('');
     }
 
     async function simulateDrift(driftMode) {
-      showBanner(driftMode
-        ? 'Injecting drifted micro-climate batch -> Evaluating KS/PSI -> Triggering Automated CT & Zero-Downtime Model Upgrade...'
-        : 'Simulating normal micro-climate traffic -> Evaluating KS/PSI drift check...');
+      const pid = currentState ? currentState.active_project_id : 'house_price';
+      setWorkflowRunning('drift_ct_loop', driftMode ? 'Evaluating Drift & Running CT...' : 'Evaluating KS/PSI Drift...');
       const res = await fetch('/drift/simulate', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          project_id: pid,
           drift_mode: driftMode,
-          n_samples: 300,
-          drift_intensity: 1.25,
+          n_samples: 250,
+          drift_intensity: 1.3,
           auto_trigger_ct: true
         })
       });
       const out = await res.json();
-      renderDriftReport(out.drift_report);
+      renderDriftReport(out.drift_report, out.continuous_training_event);
       if (out.continuous_training_triggered && out.continuous_training_event) {
-        showBanner(`CT Triggered! Promoted ${out.continuous_training_event.promoted_model_name} (${out.continuous_training_event.promoted_model_version}) with Zero Downtime!`);
+        const ev = out.continuous_training_event;
+        showBanner(
+          `⚠ Drift Detected: Auto-CT promoted ${ev.promoted_model_name} (${ev.promoted_model_version}) on ${ev.data_version}.`
+        );
+      } else {
+        showBanner(`✓ Distribution Stable (Max PSI=${out.drift_report.max_psi}).`);
       }
-      await refreshStatus();
+      await refreshStatus(false);
+      await refreshRegistry();
       await refreshLogs();
+      await refreshWorkflow();
     }
 
-    function renderDriftReport(rep) {
+    function renderDriftReport(rep, ctEvent = null) {
       if (!rep) return;
-      const statusEl = document.getElementById('driftStatus');
-      statusEl.textContent = rep.overall_drift_detected ? 'DRIFT DETECTED (CT FIRED)' : 'STABLE (NO DRIFT)';
-      statusEl.className = 'stat-val ' + (rep.overall_drift_detected ? 'pill-drift' : 'pill-ok');
-      document.getElementById('driftPsi').textContent = rep.max_psi;
+      const statusEl = document.getElementById('driftStatusBadge');
+      if (rep.overall_drift_detected) {
+        statusEl.textContent = '⚠ DRIFT DETECTED';
+        statusEl.style.color = 'var(--red)';
+      } else {
+        statusEl.textContent = '✓ STABLE';
+        statusEl.style.color = 'var(--green)';
+      }
+      document.getElementById('driftMaxPsi').textContent = rep.max_psi;
+      document.getElementById('driftFeaturesRatio').textContent =
+        `Drifted: ${rep.drifted_features_count} (${Math.round(rep.drifted_features_ratio * 100)}%)`;
+
+      const actionEl = document.getElementById('driftCtAction');
+      if (ctEvent) {
+        actionEl.textContent = `Promoted ${ctEvent.promoted_model_version}`;
+      } else if (rep.overall_drift_detected) {
+        actionEl.textContent = 'CT Retrained';
+      } else {
+        actionEl.textContent = 'Standby';
+      }
+
       const fb = rep.feature_breakdown || {};
-      document.getElementById('driftTableBody').innerHTML = Object.keys(fb).map(feat => {
+      document.getElementById('driftTableBody').innerHTML = Object.keys(fb).map((feat) => {
         const item = fb[feat];
         return `
           <tr>
-            <td>${feat}</td>
+            <th scope="row">${item.label || feat}</th>
             <td>${item.reference_mean}</td>
             <td>${item.current_mean}</td>
-            <td>${item.psi}</td>
-            <td class="${item.drift_detected ? 'pill-drift' : 'pill-ok'}">${item.drift_detected ? 'DRIFT' : 'OK'}</td>
+            <td>${item.mean_shift > 0 ? '+' + item.mean_shift : item.mean_shift}</td>
+            <td>${item.ks_statistic}</td>
+            <td>${item.ks_p_value}</td>
+            <td><b>${item.psi}</b></td>
+            <td>
+              <span class="badge ${item.drift_detected ? 'badge-red' : 'badge-green'}">
+                ${item.drift_detected ? '⚠ DRIFT' : '✓ OK'}
+              </span>
+            </td>
           </tr>
         `;
       }).join('');
     }
 
+    async function refreshContainers() {
+      const res = await fetch('/cloud/containers');
+      const data = await res.json();
+      document.getElementById('containersTableBody').innerHTML = (data.containers || []).map((c) => `
+        <tr>
+          <th scope="row"><span class="code-snippet">${c.container_name}</span></th>
+          <td>${c.role}</td>
+          <td><b>${c.host_port}</b></td>
+          <td><span class="code-snippet">${c.health_endpoint}</span></td>
+          <td><span class="badge badge-green">● ${c.status}</span></td>
+          <td><span class="code-snippet">${c.docker_inspect_cmd}</span></td>
+        </tr>
+      `).join('');
+    }
+
     async function switchSlot(slot) {
+      setWorkflowRunning('cd_serving', `Routing to ${slot.toUpperCase()} slot...`);
       await fetch('/cloud/switch-slot', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({slot})
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slot })
       });
-      showBanner(`Switched active routing slot to ${slot.toUpperCase()} with zero downtime.`);
-      await refreshStatus();
+      showBanner(`✓ Switched active container slot to ${slot.toUpperCase()}.`);
+      await refreshStatus(false);
+      await refreshContainers();
+      await refreshWorkflow();
     }
 
     async function hotReloadModel() {
-      await fetch('/cloud/reload-model', {method: 'POST'});
-      showBanner('Zero-downtime model artifact hot-reload complete.');
-      await refreshStatus();
+      setWorkflowRunning('cd_serving', 'Hot-reloading model bundle...');
+      await fetch('/cloud/reload-model', { method: 'POST' });
+      showBanner('✓ Zero-downtime model bundle hot-reload completed.');
+      await refreshStatus(false);
+      await refreshWorkflow();
     }
 
-    async function refreshAll() {
-      await refreshStatus();
+    async function refreshAll(rebuildInputs = false) {
+      await refreshStatus(rebuildInputs);
+      await refreshRegistry();
       await refreshLogs();
-      const res = await fetch('/drift/check?auto_trigger_ct=false', {method: 'POST'});
+      await refreshContainers();
+      await refreshWorkflow();
+      const pid = currentState ? currentState.active_project_id : 'house_price';
+      const res = await fetch(`/drift/check?auto_trigger_ct=false&project_id=${encodeURIComponent(pid)}`, {
+        method: 'POST'
+      });
       const out = await res.json();
       renderDriftReport(out.drift_report);
     }
 
-    refreshAll();
+    window.addEventListener('DOMContentLoaded', async () => {
+      await refreshAll(true);
+      await runPrediction();
+    });
   </script>
 </body>
 </html>

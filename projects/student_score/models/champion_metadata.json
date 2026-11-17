@@ -1,0 +1,133 @@
+{
+  "registry_id": "student_score:v2.0",
+  "project_id": "student_score",
+  "project_name": "Student Exam Score Prediction",
+  "domain": "Education Analytics",
+  "model_name": "GradientBoosting",
+  "dynamic_best_model": "GradientBoosting",
+  "ensemble_model": "VotingEnsemble",
+  "registered_model_name": "student_score_PlugAndPlayRegressor",
+  "version": "v2.0",
+  "version_number": 2,
+  "stage": "Production",
+  "mlflow_run_id": "0c10efa57781435c933093e14acce716",
+  "experiment_name": "PlugAndPlay-Cloud-MLOps-Registry-student_score",
+  "promoted": true,
+  "trigger_reason": "initial_project_bootstrap",
+  "trained_at_utc": "2026-11-17T19:24:29.822133+00:00",
+  "train_samples": 640,
+  "test_samples": 160,
+  "features": [
+    "study_hours_week",
+    "attendance_pct",
+    "previous_gpa",
+    "sleep_hours",
+    "practice_tests"
+  ],
+  "target": "exam_score",
+  "target_unit": "Marks (0-100)",
+  "data_version": {
+    "data_version": "data-v1.0",
+    "version_number": 1,
+    "project_id": "student_score",
+    "sha256_hash": "3cba82f18c6fe02fcdd8b71f1dc9b59c560c412f02908b3ef1f34258f48a9c25",
+    "sha256_short": "3cba82f18c6f",
+    "row_count": 800,
+    "feature_count": 5,
+    "features": [
+      "study_hours_week",
+      "attendance_pct",
+      "previous_gpa",
+      "sleep_hours",
+      "practice_tests"
+    ],
+    "target": "exam_score",
+    "feature_means": {
+      "study_hours_week": 15.004,
+      "attendance_pct": 81.749,
+      "previous_gpa": 7.135,
+      "sleep_hours": 6.956,
+      "practice_tests": 4.991
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:13:10.091274+00:00"
+  },
+  "artifact_path": "models/registry/student_score_v2.joblib",
+  "metrics": {
+    "rmse": 2.4173,
+    "mae": 1.7272,
+    "r2": 0.8796,
+    "mape_pct": 1.9
+  },
+  "dynamic_metrics": {
+    "model_name": "GradientBoosting",
+    "rmse": 2.4173,
+    "mae": 1.7272,
+    "r2": 0.8796
+  },
+  "ensemble_metrics": {
+    "model_name": "VotingEnsemble",
+    "rmse": 2.5631,
+    "mae": 1.8814,
+    "r2": 0.8646
+  },
+  "leaderboard": [
+    {
+      "model_name": "GradientBoosting",
+      "model_type": "Single (Dynamic)",
+      "description": "Sequential small trees where each tree corrects the previous tree's residual error.",
+      "run_id": "0c10efa57781435c933093e14acce716",
+      "rmse": 2.4173,
+      "mae": 1.7272,
+      "r2": 0.8796,
+      "mape_pct": 1.9,
+      "train_duration_sec": 0.0527
+    },
+    {
+      "model_name": "VotingEnsemble",
+      "model_type": "Ensemble",
+      "description": "Ensemble combining LinearRegression + DecisionTree + RandomForest + GradientBoosting.",
+      "run_id": "74ff4d74222e4109b97c85b5cd2d37e7",
+      "rmse": 2.5631,
+      "mae": 1.8814,
+      "r2": 0.8646,
+      "mape_pct": 2.077,
+      "train_duration_sec": 0.0798
+    },
+    {
+      "model_name": "RandomForest",
+      "model_type": "Single (Dynamic)",
+      "description": "Bagging collection of decision trees averaging independent predictions.",
+      "run_id": "760cecfb44af428daf8c3487f43c0aa7",
+      "rmse": 2.6281,
+      "mae": 1.8422,
+      "r2": 0.8577,
+      "mape_pct": 2.042,
+      "train_duration_sec": 0.0338
+    },
+    {
+      "model_name": "DecisionTree",
+      "model_type": "Single (Dynamic)",
+      "description": "Single flowchart-like tree of if-else feature splits (max_depth=6).",
+      "run_id": "2866801db5d54079958c5c586304a97c",
+      "rmse": 3.5028,
+      "mae": 2.5465,
+      "r2": 0.7472,
+      "mape_pct": 2.815,
+      "train_duration_sec": 0.0047
+    },
+    {
+      "model_name": "LinearRegression",
+      "model_type": "Single (Dynamic)",
+      "description": "Simple linear equation (y = w\u00b7x + b) over standardized features \u2014 fast & easy to interpret.",
+      "run_id": "25f0406319c14b65bd02d848cddbe8d4",
+      "rmse": 4.1612,
+      "mae": 3.2725,
+      "r2": 0.6432,
+      "mape_pct": 3.571,
+      "train_duration_sec": 0.0052
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "registry_id": "cloud_cost:v2.0",
+  "project_id": "cloud_cost",
+  "project_name": "Cloud Server Cost Estimator",
+  "domain": "Cloud Computing FinOps",
+  "model_name": "GradientBoosting",
+  "dynamic_best_model": "GradientBoosting",
+  "ensemble_model": "VotingEnsemble",
+  "registered_model_name": "cloud_cost_PlugAndPlayRegressor",
+  "version": "v2.0",
+  "version_number": 2,
+  "stage": "Production",
+  "mlflow_run_id": "ba4fbff1bdc249c6ab79c65c7b4740a6",
+  "experiment_name": "PlugAndPlay-Cloud-MLOps-Registry-cloud_cost",
+  "promoted": true,
+  "trigger_reason": "initial_project_bootstrap",
+  "trained_at_utc": "2026-11-17T19:24:30.147858+00:00",
+  "train_samples": 640,
+  "test_samples": 160,
+  "features": [
+    "active_users",
+    "cpu_utilization_pct",
+    "memory_gb",
+    "network_out_gb",
+    "storage_iops"
+  ],
+  "target": "daily_cost_usd",
+  "target_unit": "USD / Day",
+  "data_version": {
+    "data_version": "data-v1.0",
+    "version_number": 1,
+    "project_id": "cloud_cost",
+    "sha256_hash": "a755a975cbc2658535232bc35f1e416e7f13f914875541dcb85e13c1c6594a17",
+    "sha256_short": "a755a975cbc2",
+    "row_count": 800,
+    "feature_count": 5,
+    "features": [
+      "active_users",
+      "cpu_utilization_pct",
+      "memory_gb",
+      "network_out_gb",
+      "storage_iops"
+    ],
+    "target": "daily_cost_usd",
+    "feature_means": {
+      "active_users": 1200.293,
+      "cpu_utilization_pct": 57.712,
+      "memory_gb": 31.415,
+      "network_out_gb": 113.454,
+      "storage_iops": 2194.204
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:13:10.400425+00:00"
+  },
+  "artifact_path": "models/registry/cloud_cost_v2.joblib",
+  "metrics": {
+    "rmse": 7.6207,
+    "mae": 5.5225,
+    "r2": 0.9227,
+    "mape_pct": 2.666
+  },
+  "dynamic_metrics": {
+    "model_name": "GradientBoosting",
+    "rmse": 7.6207,
+    "mae": 5.5225,
+    "r2": 0.9227
+  },
+  "ensemble_metrics": {
+    "model_name": "VotingEnsemble",
+    "rmse": 8.3686,
+    "mae": 6.0852,
+    "r2": 0.9068
+  },
+  "leaderboard": [
+    {
+      "model_name": "GradientBoosting",
+      "model_type": "Single (Dynamic)",
+      "description": "Sequential small trees where each tree corrects the previous tree's residual error.",
+      "run_id": "ba4fbff1bdc249c6ab79c65c7b4740a6",
+      "rmse": 7.6207,
+      "mae": 5.5225,
+      "r2": 0.9227,
+      "mape_pct": 2.666,
+      "train_duration_sec": 0.0507
+    },
+    {
+      "model_name": "VotingEnsemble",
+      "model_type": "Ensemble",
+      "description": "Ensemble combining LinearRegression + DecisionTree + RandomForest + GradientBoosting.",
+      "run_id": "dde7c46f99594e60bbd15d4b0af90d1f",
+      "rmse": 8.3686,
+      "mae": 6.0852,
+      "r2": 0.9068,
+      "mape_pct": 2.912,
+      "train_duration_sec": 0.0958
+    },
+    {
+      "model_name": "LinearRegression",
+      "model_type": "Single (Dynamic)",
+      "description": "Simple linear equation (y = w\u00b7x + b) over standardized features \u2014 fast & easy to interpret.",
+      "run_id": "49827de73ded4c8ab6a665cd8ad4a842",
+      "rmse": 8.5425,
+      "mae": 5.9651,
+      "r2": 0.9029,
+      "mape_pct": 2.948,
+      "train_duration_sec": 0.0054
+    },
+    {
+      "model_name": "RandomForest",
+      "model_type": "Single (Dynamic)",
+      "description": "Bagging collection of decision trees averaging independent predictions.",
+      "run_id": "58486ecdd88743c3a832bb3e958e9a60",
+      "rmse": 9.3631,
+      "mae": 6.7606,
+      "r2": 0.8834,
+      "mape_pct": 3.24,
+      "train_duration_sec": 0.0343
+    },
+    {
+      "model_name": "DecisionTree",
+      "model_type": "Single (Dynamic)",
+      "description": "Single flowchart-like tree of if-else feature splits (max_depth=6).",
+      "run_id": "6bee6c4115ad4426a4837695ffaf2ad1",
+      "rmse": 15.4923,
+      "mae": 12.0286,
+      "r2": 0.6807,
+      "mape_pct": 5.775,
+      "train_duration_sec": 0.0045
+    }
+  ]
+}

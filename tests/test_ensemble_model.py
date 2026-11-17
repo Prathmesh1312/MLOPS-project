@@ -1,62 +1,78 @@
-"""Tests for Multi-Model Ensemble Regressor, MLflow Tracking, and Champion Registry."""
+"""Tests for Simple Interpretable ML Models, Dual-Mode Serving Bundle, and Centralized Registry."""
 from __future__ import annotations
 
-from src.data.dataset import generate_microclimate_dataset
+from src.data.dataset import generate_project_dataset
 from src.models.ensemble import build_candidate_models
 from src.models.registry import model_manager
-from src.models.train import train_and_promote
+from src.models.train import load_central_registry, train_and_promote
 
 
-def test_build_candidate_models_includes_all_regressors() -> None:
+def test_build_candidate_models_includes_simple_interpretable_models() -> None:
     models = build_candidate_models(
         {
-            "ridge_alpha": 1.0,
+            "dt_max_depth": 5,
             "rf_n_estimators": 20,
-            "rf_max_depth": 5,
-            "xgb_n_estimators": 20,
-            "xgb_learning_rate": 0.1,
-            "xgb_max_depth": 3,
-            "lgbm_n_estimators": 20,
-            "lgbm_learning_rate": 0.1,
+            "rf_max_depth": 6,
+            "gb_n_estimators": 20,
+            "gb_learning_rate": 0.1,
+            "gb_max_depth": 3,
         }
     )
     expected = {
-        "RidgeBaseline",
+        "LinearRegression",
+        "DecisionTree",
         "RandomForest",
-        "XGBoost",
-        "LightGBM",
+        "GradientBoosting",
         "VotingEnsemble",
-        "StackingEnsemble",
     }
-    assert expected.issubset(set(models.keys()))
+    assert expected == set(models.keys())
 
 
-def test_train_and_promote_logs_to_mlflow_and_passes_gate() -> None:
-    df = generate_microclimate_dataset(n_samples=350, seed=99)
+def test_train_and_promote_registers_model_and_data_version() -> None:
+    df = generate_project_dataset(project_id="house_price", n_samples=300, seed=77)
     meta = train_and_promote(
         trigger_reason="pytest_unit_verification",
         custom_df=df,
+        project_id="house_price",
     )
     assert meta["promoted"] is True
-    assert meta["metrics"]["r2"] >= 0.85
-    assert meta["metrics"]["rmse"] < 1.0
-    assert len(meta["leaderboard"]) == 6
+    assert meta["metrics"]["r2"] >= 0.75
+    assert len(meta["leaderboard"]) == 5
+    assert "data_version" in meta
+    assert meta["data_version"]["data_version"].startswith("data-v")
+
+    registry = load_central_registry()
+    assert len(registry) >= 1
+    assert any(r["version"] == meta["version"] and r["project_id"] == "house_price" for r in registry)
 
 
-def test_model_manager_zero_downtime_hot_reload_and_inference() -> None:
-    status_before = model_manager.reload_model(auto_train_if_missing=True)
-    assert status_before["is_ready"] is True
+def test_dual_mode_cd_serving_dynamic_and_ensemble() -> None:
+    status = model_manager.reload_model(auto_train_if_missing=True, project_id="house_price")
+    assert status["is_ready"] is True
 
-    pred = model_manager.predict_single(
-        {
-            "temperature_c": 29.0,
-            "relative_humidity_pct": 50.0,
-            "wind_speed_ms": 3.0,
-            "solar_radiation_mj": 21.0,
-            "pressure_kpa": 98.5,
-            "water_temp_c": 26.5,
-        }
+    sample_input = {
+        "area_sqft": 2100.0,
+        "bedrooms": 3.0,
+        "bathrooms": 2.0,
+        "age_years": 10.0,
+        "distance_city_km": 7.5,
+    }
+
+    res_dynamic = model_manager.predict_single(
+        sample_input, project_id="house_price", serving_mode="dynamic"
     )
-    assert pred["evaporation_rate_mm_day"] > 0.0
-    assert pred["inference_latency_ms"] >= 0.0
-    assert pred["deployment_slot"] in ("blue", "green")
+    assert res_dynamic["serving_mode"] == "dynamic"
+    assert res_dynamic["prediction"] == res_dynamic["dynamic_output"]["prediction"]
+    assert res_dynamic["dynamic_output"]["selected_model"] in (
+        "LinearRegression",
+        "DecisionTree",
+        "RandomForest",
+        "GradientBoosting",
+    )
+
+    res_ensemble = model_manager.predict_single(
+        sample_input, project_id="house_price", serving_mode="ensemble"
+    )
+    assert res_ensemble["serving_mode"] == "ensemble"
+    assert res_ensemble["prediction"] == res_ensemble["ensemble_output"]["prediction"]
+    assert len(res_ensemble["ensemble_output"]["member_predictions"]) == 4

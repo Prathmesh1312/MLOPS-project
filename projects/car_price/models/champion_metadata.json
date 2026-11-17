@@ -1,0 +1,130 @@
+{
+  "registry_id": "car_price:v3.0",
+  "project_id": "car_price",
+  "project_name": "Used Car Price Predictor",
+  "domain": "Custom ML Project",
+  "model_name": "GradientBoosting",
+  "dynamic_best_model": "GradientBoosting",
+  "ensemble_model": "VotingEnsemble",
+  "registered_model_name": "car_price_PlugAndPlayRegressor",
+  "version": "v3.0",
+  "version_number": 3,
+  "stage": "Production",
+  "mlflow_run_id": "5430129a8ba84b649ad700d2b2439d2d",
+  "experiment_name": "PlugAndPlay-Cloud-MLOps-Registry-car_price",
+  "promoted": true,
+  "trigger_reason": "new_project_pipeline_init",
+  "trained_at_utc": "2026-11-17T19:29:56.671559+00:00",
+  "train_samples": 640,
+  "test_samples": 160,
+  "features": [
+    "engine_hp",
+    "mileage_km_k",
+    "car_age_years",
+    "fuel_efficiency_kmpl"
+  ],
+  "target": "resale_price_k",
+  "target_unit": "$1,000 USD",
+  "data_version": {
+    "data_version": "data-v2.0",
+    "version_number": 2,
+    "project_id": "car_price",
+    "sha256_hash": "68834a392be8b8c03f41c618bfd2529ba2157e73cf32ce7c106632c238b68e29",
+    "sha256_short": "68834a392be8",
+    "row_count": 800,
+    "feature_count": 4,
+    "features": [
+      "engine_hp",
+      "mileage_km_k",
+      "car_age_years",
+      "fuel_efficiency_kmpl"
+    ],
+    "target": "resale_price_k",
+    "feature_means": {
+      "engine_hp": 50.013,
+      "mileage_km_k": 59.695,
+      "car_age_years": 69.123,
+      "fuel_efficiency_kmpl": 79.338
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:29:56.241710+00:00"
+  },
+  "artifact_path": "models/registry/car_price_v3.joblib",
+  "metrics": {
+    "rmse": 16.2244,
+    "mae": 12.2301,
+    "r2": 0.923,
+    "mape_pct": 313.577
+  },
+  "dynamic_metrics": {
+    "model_name": "GradientBoosting",
+    "rmse": 16.2244,
+    "mae": 12.2301,
+    "r2": 0.923
+  },
+  "ensemble_metrics": {
+    "model_name": "VotingEnsemble",
+    "rmse": 17.4316,
+    "mae": 13.0862,
+    "r2": 0.9111
+  },
+  "leaderboard": [
+    {
+      "model_name": "GradientBoosting",
+      "model_type": "Single (Dynamic)",
+      "description": "Sequential small trees where each tree corrects the previous tree's residual error.",
+      "run_id": "5430129a8ba84b649ad700d2b2439d2d",
+      "rmse": 16.2244,
+      "mae": 12.2301,
+      "r2": 0.923,
+      "mape_pct": 313.577,
+      "train_duration_sec": 0.0541
+    },
+    {
+      "model_name": "VotingEnsemble",
+      "model_type": "Ensemble",
+      "description": "Ensemble combining LinearRegression + DecisionTree + RandomForest + GradientBoosting.",
+      "run_id": "4a3a1b55e38e4a378c075a7974a269ff",
+      "rmse": 17.4316,
+      "mae": 13.0862,
+      "r2": 0.9111,
+      "mape_pct": 338.294,
+      "train_duration_sec": 0.1023
+    },
+    {
+      "model_name": "LinearRegression",
+      "model_type": "Single (Dynamic)",
+      "description": "Simple linear equation (y = w\u00b7x + b) over standardized features \u2014 fast & easy to interpret.",
+      "run_id": "86ec38ddf1264658b63f2fad353dbcf2",
+      "rmse": 19.3642,
+      "mae": 14.9167,
+      "r2": 0.8902,
+      "mape_pct": 594.305,
+      "train_duration_sec": 0.0263
+    },
+    {
+      "model_name": "RandomForest",
+      "model_type": "Single (Dynamic)",
+      "description": "Bagging collection of decision trees averaging independent predictions.",
+      "run_id": "1b72f8d936154609b9b25105c65cf458",
+      "rmse": 20.1214,
+      "mae": 14.4981,
+      "r2": 0.8815,
+      "mape_pct": 323.633,
+      "train_duration_sec": 0.0599
+    },
+    {
+      "model_name": "DecisionTree",
+      "model_type": "Single (Dynamic)",
+      "description": "Single flowchart-like tree of if-else feature splits (max_depth=6).",
+      "run_id": "64cc7c9ad7404032ae3f09ae0e2f8e96",
+      "rmse": 29.4414,
+      "mae": 21.6179,
+      "r2": 0.7463,
+      "mape_pct": 319.361,
+      "train_duration_sec": 0.0125
+    }
+  ]
+}

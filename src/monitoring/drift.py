@@ -1,4 +1,4 @@
-"""Statistical Micro-Climate Data Drift Engine (Kolmogorov-Smirnov + PSI)."""
+"""Plug-and-Play Statistical Data Drift Engine (Kolmogorov-Smirnov + PSI)."""
 from __future__ import annotations
 
 import json
@@ -10,7 +10,7 @@ import pandas as pd
 from scipy.stats import ks_2samp
 
 from src.config import PROJECT_ROOT, load_config
-from src.data.dataset import RAW_FEATURES, prepare_datasets
+from src.data.dataset import DEFAULT_PROJECT_ID, get_project_spec, prepare_datasets
 from src.monitoring.logger import telemetry_logger
 
 
@@ -38,31 +38,33 @@ def evaluate_data_drift(
     current_df: pd.DataFrame | None = None,
     reference_df: pd.DataFrame | None = None,
     config: dict[str, Any] | None = None,
+    project_id: str | None = None,
 ) -> dict[str, Any]:
     """
-    Compare incoming production micro-climate distribution against reference dataset
-    using Kolmogorov-Smirnov (KS) two-sample test and Population Stability Index (PSI).
+    Compare incoming production feature distribution against reference baseline dataset
+    using Two-Sample Kolmogorov-Smirnov (KS) test and Population Stability Index (PSI).
     """
     cfg = config or load_config()
-    prepare_datasets(cfg)
+    pid = project_id or cfg.get("project", {}).get("default_project_id", DEFAULT_PROJECT_ID)
+    spec = get_project_spec(pid, cfg)
+    prep = prepare_datasets(cfg, project_id=pid)
 
     if reference_df is None:
-        ref_path = PROJECT_ROOT / cfg["data"]["reference_path"]
-        reference_df = pd.read_csv(ref_path)
+        reference_df = pd.read_csv(prep["reference_path"])
 
     if current_df is None:
-        prod_path = PROJECT_ROOT / cfg["data"]["production_batch_path"]
-        current_df = pd.read_csv(prod_path)
+        current_df = pd.read_csv(prep["production_batch_path"])
 
     ks_alpha = float(cfg["monitoring"].get("ks_p_value_threshold", 0.01))
-    psi_limit = float(cfg["monitoring"].get("psi_threshold", 0.25))
-    min_ratio = float(cfg["monitoring"].get("min_drifted_features_ratio", 0.33))
+    psi_limit = float(cfg["monitoring"].get("psi_threshold", 0.20))
+    min_ratio = float(cfg["monitoring"].get("min_drifted_features_ratio", 0.30))
 
+    feature_cols = list(spec["features"].keys())
     feature_reports: dict[str, Any] = {}
     drifted_features: list[str] = []
     max_psi = 0.0
 
-    for col in RAW_FEATURES:
+    for col in feature_cols:
         if col not in reference_df.columns or col not in current_df.columns:
             continue
         ref_vals = reference_df[col].dropna().to_numpy(dtype=float)
@@ -77,6 +79,7 @@ def evaluate_data_drift(
             drifted_features.append(col)
 
         feature_reports[col] = {
+            "label": spec["features"][col].get("label", col),
             "reference_mean": round(float(np.mean(ref_vals)), 3),
             "current_mean": round(float(np.mean(cur_vals)), 3),
             "mean_shift": round(float(np.mean(cur_vals) - np.mean(ref_vals)), 3),
@@ -91,6 +94,8 @@ def evaluate_data_drift(
     overall_drift = drift_share >= min_ratio
 
     report = {
+        "project_id": pid,
+        "project_name": spec["name"],
         "checked_at_utc": datetime.now(timezone.utc).isoformat(),
         "reference_samples": len(reference_df),
         "current_samples": len(current_df),

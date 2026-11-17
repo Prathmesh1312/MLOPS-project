@@ -1,0 +1,30 @@
+[
+  {
+    "data_version": "data-v1.0",
+    "version_number": 1,
+    "project_id": "student_score",
+    "sha256_hash": "3cba82f18c6fe02fcdd8b71f1dc9b59c560c412f02908b3ef1f34258f48a9c25",
+    "sha256_short": "3cba82f18c6f",
+    "row_count": 800,
+    "feature_count": 5,
+    "features": [
+      "study_hours_week",
+      "attendance_pct",
+      "previous_gpa",
+      "sleep_hours",
+      "practice_tests"
+    ],
+    "target": "exam_score",
+    "feature_means": {
+      "study_hours_week": 15.004,
+      "attendance_pct": 81.749,
+      "previous_gpa": 7.135,
+      "sleep_hours": 6.956,
+      "practice_tests": 4.991
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:13:10.091274+00:00"
+  }
+]

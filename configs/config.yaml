@@ -1,59 +1,74 @@
 project:
-  name: "cloud-mlops-evaporation-pipeline"
-  version: "1.0.0"
+  name: "plug-and-play-cloud-mlops-platform"
+  version: "2.0.0"
   environment: "local-cloud-hybrid"
+  default_project_id: "house_price"
 
 cloud:
-  provider: "AWS EC2 + Cloudflare R2"
+  provider: "AWS EC2 + Cloudflare R2 + Docker Microservices"
   container_base_image: "python:3.11-slim-bookworm"
   default_deployment_slot: "blue"
-  r2_bucket_name: "mlops-evaporation-artifacts"
+  default_serving_mode: "both"
+  r2_bucket_name: "mlops-cloud-artifacts"
   r2_endpoint_template: "https://<CLOUDFLARE_ACCOUNT_ID>.r2.cloudflarestorage.com"
-  github_repo: "shashwat-upadhyay/ml-ci-cd-ct-pipeline"
-  webhook_event_type: "micro_climate_drift_detected"
+  github_repo: "cloud-mlops/plug-and-play-mlops-pipeline"
+  webhook_event_type: "data_drift_detected"
+  services:
+    - name: "mlops-control-plane"
+      role: "Plug-and-Play MLOps UI, Project Manager & Centralized Model Registry"
+      port: 8000
+      health_endpoint: "/health/ready"
+    - name: "mlops-serving-blue"
+      role: "CD Model Serving Container (Blue Slot — Dynamic & Ensemble Output)"
+      port: 8001
+      health_endpoint: "/health/ready"
+    - name: "mlops-serving-green"
+      role: "CD Model Serving Container (Green Slot — Zero-Downtime Standby/Active)"
+      port: 8002
+      health_endpoint: "/health/ready"
+    - name: "mlops-drift-ct-worker"
+      role: "Continuous Training (CT) & Statistical Drift Monitoring Microservice"
+      port: 8003
+      health_endpoint: "/health"
+    - name: "mlops-mlflow-server"
+      role: "MLflow Experiment Tracking & Artifact UI Server"
+      port: 5000
+      health_endpoint: "/"
+    - name: "mlops-nginx-gateway"
+      role: "Nginx Reverse Proxy & Zero-Downtime Blue/Green Load Balancer"
+      port: 8080
+      health_endpoint: "/health/live"
 
 data:
-  reference_path: "data/raw/reference_climate.csv"
+  projects_dir: "projects"
+  reference_path: "data/raw/reference_data.csv"
   production_batch_path: "data/raw/current_production.csv"
   processed_train_path: "data/processed/train_features.csv"
-  n_reference_samples: 1500
+  n_reference_samples: 600
   random_seed: 42
-  features:
-    - "temperature_c"
-    - "relative_humidity_pct"
-    - "wind_speed_ms"
-    - "solar_radiation_mj"
-    - "pressure_kpa"
-    - "water_temp_c"
-  engineered_features:
-    - "vapor_pressure_deficit_kpa"
-    - "fao56_baseline_mm_day"
-    - "thermal_gradient_c"
-  target: "evaporation_rate_mm_day"
 
 model:
-  experiment_name: "Reservoir-Evaporation-MultiModel-MLOps"
-  registered_model_name: "EvaporationEnsembleRegressor"
+  experiment_name: "PlugAndPlay-Cloud-MLOps-Registry"
+  registered_model_name: "PlugAndPlayRegressor"
   mlflow_tracking_uri: "sqlite:///mlflow.db"
+  central_registry_path: "models/central_registry.json"
   champion_artifact_path: "models/champion_ensemble.joblib"
   metadata_path: "models/champion_metadata.json"
   test_size: 0.2
-  min_r2_gate: 0.85
+  min_r2_gate: 0.70
   hyperparameters:
-    ridge_alpha: 1.0
-    rf_n_estimators: 120
-    rf_max_depth: 10
-    xgb_n_estimators: 140
-    xgb_learning_rate: 0.06
-    xgb_max_depth: 5
-    lgbm_n_estimators: 140
-    lgbm_learning_rate: 0.06
+    dt_max_depth: 6
+    rf_n_estimators: 80
+    rf_max_depth: 8
+    gb_n_estimators: 80
+    gb_learning_rate: 0.08
+    gb_max_depth: 4
 
 monitoring:
   telemetry_log_path: "logs/production_telemetry.jsonl"
   drift_report_path: "logs/latest_drift_report.json"
   ct_history_path: "logs/ct_events_history.json"
   ks_p_value_threshold: 0.01
-  psi_threshold: 0.25
-  min_drifted_features_ratio: 0.33
+  psi_threshold: 0.20
+  min_drifted_features_ratio: 0.30
   auto_trigger_ct_on_drift: true

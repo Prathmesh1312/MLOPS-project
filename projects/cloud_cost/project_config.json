@@ -1,0 +1,63 @@
+{
+  "project_id": "cloud_cost",
+  "name": "Cloud Server Cost Estimator",
+  "description": "Predict daily cloud infrastructure cost ($ USD) from active users, CPU utilization, RAM, network egress, and storage IOPS.",
+  "domain": "Cloud Computing FinOps",
+  "target": "daily_cost_usd",
+  "target_unit": "USD / Day",
+  "features": {
+    "active_users": {
+      "label": "Concurrent Users",
+      "min": 10.0,
+      "max": 25000.0,
+      "default": 1400.0,
+      "mean": 1200.0,
+      "std": 350.0,
+      "drift_shift": 650.0,
+      "weight": 0.03
+    },
+    "cpu_utilization_pct": {
+      "label": "CPU Utilization (%)",
+      "min": 1.0,
+      "max": 100.0,
+      "default": 64.0,
+      "mean": 58.0,
+      "std": 14.0,
+      "drift_shift": 20.0,
+      "weight": 0.95
+    },
+    "memory_gb": {
+      "label": "Provisioned RAM (GB)",
+      "min": 1.0,
+      "max": 512.0,
+      "default": 32.0,
+      "mean": 32.0,
+      "std": 10.0,
+      "drift_shift": 18.0,
+      "weight": 1.5
+    },
+    "network_out_gb": {
+      "label": "Network Egress (GB)",
+      "min": 0.0,
+      "max": 5000.0,
+      "default": 130.0,
+      "mean": 115.0,
+      "std": 35.0,
+      "drift_shift": 60.0,
+      "weight": 0.22
+    },
+    "storage_iops": {
+      "label": "Storage IOPS",
+      "min": 50.0,
+      "max": 50000.0,
+      "default": 2400.0,
+      "mean": 2200.0,
+      "std": 600.0,
+      "drift_shift": 1100.0,
+      "weight": 0.012
+    }
+  },
+  "base_intercept": 18.0,
+  "noise_std": 3.5,
+  "created_at_utc": "2026-11-17T19:13:05.564465+00:00"
+}

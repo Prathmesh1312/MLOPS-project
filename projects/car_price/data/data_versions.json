@@ -1,0 +1,54 @@
+[
+  {
+    "data_version": "data-v1.0",
+    "version_number": 1,
+    "project_id": "car_price",
+    "sha256_hash": "2b31efd7ce92274eb2aee7a5cbe73606c3d3f55c5a91d9219b7c048d5b562528",
+    "sha256_short": "2b31efd7ce92",
+    "row_count": 800,
+    "feature_count": 4,
+    "features": [
+      "horsepower",
+      "mileage_km_k",
+      "age_years",
+      "km_per_liter"
+    ],
+    "target": "resale_price_usd_k",
+    "feature_means": {
+      "horsepower": 50.013,
+      "mileage_km_k": 59.695,
+      "age_years": 69.123,
+      "km_per_liter": 79.338
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:13:10.784761+00:00"
+  },
+  {
+    "data_version": "data-v2.0",
+    "version_number": 2,
+    "project_id": "car_price",
+    "sha256_hash": "68834a392be8b8c03f41c618bfd2529ba2157e73cf32ce7c106632c238b68e29",
+    "sha256_short": "68834a392be8",
+    "row_count": 800,
+    "feature_count": 4,
+    "features": [
+      "engine_hp",
+      "mileage_km_k",
+      "car_age_years",
+      "fuel_efficiency_kmpl"
+    ],
+    "target": "resale_price_k",
+    "feature_means": {
+      "engine_hp": 50.013,
+      "mileage_km_k": 59.695,
+      "car_age_years": 69.123,
+      "fuel_efficiency_kmpl": 79.338
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:29:56.241710+00:00"
+  }
+]

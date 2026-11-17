@@ -1,0 +1,730 @@
+[
+  {
+    "data_version": "data-v1.0",
+    "version_number": 1,
+    "project_id": "house_price",
+    "sha256_hash": "688e5b9c522d1a1ee265be157451d80b7a74ed36ee6c0e009233315b9081cdd9",
+    "sha256_short": "688e5b9c522d",
+    "row_count": 800,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 1800.404,
+      "bedrooms": 3.191,
+      "bathrooms": 2.16,
+      "age_years": 17.716,
+      "distance_city_km": 11.965
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:13:04.328281+00:00"
+  },
+  {
+    "data_version": "data-v2.0",
+    "version_number": 2,
+    "project_id": "house_price",
+    "sha256_hash": "a4636fad39561f6d828aa41cda7c0a4d25b291322cdb2a91831f8208fa7b7a8e",
+    "sha256_short": "a4636fad3956",
+    "row_count": 780,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2034.127,
+      "bedrooms": 3.638,
+      "bathrooms": 2.477,
+      "age_years": 15.686,
+      "distance_city_km": 10.859
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:13:06.231273+00:00"
+  },
+  {
+    "data_version": "data-v3.0",
+    "version_number": 3,
+    "project_id": "house_price",
+    "sha256_hash": "977ab6012b0ba882d816390b234606d969634d9ed99d235b9692829c24266bd5",
+    "sha256_short": "977ab6012b0b",
+    "row_count": 300,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 1773.302,
+      "bedrooms": 3.223,
+      "bathrooms": 2.21,
+      "age_years": 18.526,
+      "distance_city_km": 11.633
+    },
+    "trigger_reason": "pytest_unit_verification",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:13:06.682845+00:00"
+  },
+  {
+    "data_version": "data-v4.0",
+    "version_number": 4,
+    "project_id": "house_price",
+    "sha256_hash": "a4636fad39561f6d828aa41cda7c0a4d25b291322cdb2a91831f8208fa7b7a8e",
+    "sha256_short": "a4636fad3956",
+    "row_count": 780,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2034.127,
+      "bedrooms": 3.638,
+      "bathrooms": 2.477,
+      "age_years": 15.686,
+      "distance_city_km": 10.859
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:13:09.222429+00:00"
+  },
+  {
+    "data_version": "data-v5.0",
+    "version_number": 5,
+    "project_id": "house_price",
+    "sha256_hash": "389e0816534c571f32863a570a98a0ae18e8325bf8bbe445672fbcbdc9bc2f08",
+    "sha256_short": "389e0816534c",
+    "row_count": 860,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2092.965,
+      "bedrooms": 3.751,
+      "bathrooms": 2.586,
+      "age_years": 14.813,
+      "distance_city_km": 10.428
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:13:11.373412+00:00"
+  },
+  {
+    "data_version": "data-v6.0",
+    "version_number": 6,
+    "project_id": "house_price",
+    "sha256_hash": "1263d87df009d0ff6e0e9e5506b66485c4cc7accb98d8d30f6dbb89cc33121c9",
+    "sha256_short": "1263d87df009",
+    "row_count": 780,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2018.059,
+      "bedrooms": 3.609,
+      "bathrooms": 2.451,
+      "age_years": 15.622,
+      "distance_city_km": 10.867
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:20:38.673557+00:00"
+  },
+  {
+    "data_version": "data-v7.0",
+    "version_number": 7,
+    "project_id": "house_price",
+    "sha256_hash": "977ab6012b0ba882d816390b234606d969634d9ed99d235b9692829c24266bd5",
+    "sha256_short": "977ab6012b0b",
+    "row_count": 300,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 1773.302,
+      "bedrooms": 3.223,
+      "bathrooms": 2.21,
+      "age_years": 18.526,
+      "distance_city_km": 11.633
+    },
+    "trigger_reason": "pytest_unit_verification",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:20:39.159598+00:00"
+  },
+  {
+    "data_version": "data-v8.0",
+    "version_number": 8,
+    "project_id": "house_price",
+    "sha256_hash": "1263d87df009d0ff6e0e9e5506b66485c4cc7accb98d8d30f6dbb89cc33121c9",
+    "sha256_short": "1263d87df009",
+    "row_count": 780,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2018.059,
+      "bedrooms": 3.609,
+      "bathrooms": 2.451,
+      "age_years": 15.622,
+      "distance_city_km": 10.867
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:24:28.454175+00:00"
+  },
+  {
+    "data_version": "data-v9.0",
+    "version_number": 9,
+    "project_id": "house_price",
+    "sha256_hash": "f0c73aa32c4d79d350a850071fbec9a1c9e3dd99b09e79611e6e759395c95629",
+    "sha256_short": "f0c73aa32c4d",
+    "row_count": 860,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2096.615,
+      "bedrooms": 3.767,
+      "bathrooms": 2.574,
+      "age_years": 14.786,
+      "distance_city_km": 10.435
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:24:30.918669+00:00"
+  },
+  {
+    "data_version": "data-v10.0",
+    "version_number": 10,
+    "project_id": "house_price",
+    "sha256_hash": "674cfe8755fad67fd4b0f685cdedc2b69708aff54cc405748dc3ee9396eca535",
+    "sha256_short": "674cfe8755fa",
+    "row_count": 850,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2069.185,
+      "bedrooms": 3.748,
+      "bathrooms": 2.532,
+      "age_years": 14.782,
+      "distance_city_km": 10.524
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T19:27:42.470912+00:00"
+  },
+  {
+    "data_version": "data-v11.0",
+    "version_number": 11,
+    "project_id": "house_price",
+    "sha256_hash": "e8da6f34109a72b9333786a45a6954f591524f9147210c5e5af526330467587b",
+    "sha256_short": "e8da6f34109a",
+    "row_count": 780,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2010.968,
+      "bedrooms": 3.606,
+      "bathrooms": 2.485,
+      "age_years": 15.696,
+      "distance_city_km": 10.836
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:09:24.347682+00:00"
+  },
+  {
+    "data_version": "data-v12.0",
+    "version_number": 12,
+    "project_id": "house_price",
+    "sha256_hash": "977ab6012b0ba882d816390b234606d969634d9ed99d235b9692829c24266bd5",
+    "sha256_short": "977ab6012b0b",
+    "row_count": 300,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 1773.302,
+      "bedrooms": 3.223,
+      "bathrooms": 2.21,
+      "age_years": 18.526,
+      "distance_city_km": 11.633
+    },
+    "trigger_reason": "pytest_unit_verification",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:09:24.803312+00:00"
+  },
+  {
+    "data_version": "data-v13.0",
+    "version_number": 13,
+    "project_id": "house_price",
+    "sha256_hash": "e8da6f34109a72b9333786a45a6954f591524f9147210c5e5af526330467587b",
+    "sha256_short": "e8da6f34109a",
+    "row_count": 780,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2010.968,
+      "bedrooms": 3.606,
+      "bathrooms": 2.485,
+      "age_years": 15.696,
+      "distance_city_km": 10.836
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:16:55.957577+00:00"
+  },
+  {
+    "data_version": "data-v14.0",
+    "version_number": 14,
+    "project_id": "house_price",
+    "sha256_hash": "e8fc986e0ef9adf6a443691deff10d3e89119a97f850a0b8cd518f7b0334edd3",
+    "sha256_short": "e8fc986e0ef9",
+    "row_count": 930,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 1976.336,
+      "bedrooms": 3.537,
+      "bathrooms": 2.446,
+      "age_years": 16.131,
+      "distance_city_km": 11.063
+    },
+    "trigger_reason": "manual_registry_training",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:20:55.891198+00:00"
+  },
+  {
+    "data_version": "data-v15.0",
+    "version_number": 15,
+    "project_id": "house_price",
+    "sha256_hash": "e8da6f34109a72b9333786a45a6954f591524f9147210c5e5af526330467587b",
+    "sha256_short": "e8da6f34109a",
+    "row_count": 780,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2010.968,
+      "bedrooms": 3.606,
+      "bathrooms": 2.485,
+      "age_years": 15.696,
+      "distance_city_km": 10.836
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:20:57.002609+00:00"
+  },
+  {
+    "data_version": "data-v16.0",
+    "version_number": 16,
+    "project_id": "house_price",
+    "sha256_hash": "c5456ae827df492834c198f0660088dad52dc7058e56acee5d8bac499f923e10",
+    "sha256_short": "c5456ae827df",
+    "row_count": 930,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 1978.885,
+      "bedrooms": 3.526,
+      "bathrooms": 2.418,
+      "age_years": 15.989,
+      "distance_city_km": 11.005
+    },
+    "trigger_reason": "manual_registry_training",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:20:57.190068+00:00"
+  },
+  {
+    "data_version": "data-v17.0",
+    "version_number": 17,
+    "project_id": "house_price",
+    "sha256_hash": "e8da6f34109a72b9333786a45a6954f591524f9147210c5e5af526330467587b",
+    "sha256_short": "e8da6f34109a",
+    "row_count": 780,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2010.968,
+      "bedrooms": 3.606,
+      "bathrooms": 2.485,
+      "age_years": 15.696,
+      "distance_city_km": 10.836
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:20:57.554173+00:00"
+  },
+  {
+    "data_version": "data-v18.0",
+    "version_number": 18,
+    "project_id": "house_price",
+    "sha256_hash": "74620cd1d30d4f52f8aa3d28ffdeade4d04363f233745d309265df0323452822",
+    "sha256_short": "74620cd1d30d",
+    "row_count": 930,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 1969.117,
+      "bedrooms": 3.529,
+      "bathrooms": 2.449,
+      "age_years": 15.89,
+      "distance_city_km": 10.964
+    },
+    "trigger_reason": "manual_registry_training",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:21:03.797830+00:00"
+  },
+  {
+    "data_version": "data-v19.0",
+    "version_number": 19,
+    "project_id": "house_price",
+    "sha256_hash": "e8da6f34109a72b9333786a45a6954f591524f9147210c5e5af526330467587b",
+    "sha256_short": "e8da6f34109a",
+    "row_count": 780,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2010.968,
+      "bedrooms": 3.606,
+      "bathrooms": 2.485,
+      "age_years": 15.696,
+      "distance_city_km": 10.836
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:21:04.169551+00:00"
+  },
+  {
+    "data_version": "data-v20.0",
+    "version_number": 20,
+    "project_id": "house_price",
+    "sha256_hash": "3c32674d73a4ba49cca33a8c48ba6cb95ec2f827154ca44e5d2942cda1fc33af",
+    "sha256_short": "3c32674d73a4",
+    "row_count": 930,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 1987.171,
+      "bedrooms": 3.526,
+      "bathrooms": 2.435,
+      "age_years": 16.063,
+      "distance_city_km": 11.056
+    },
+    "trigger_reason": "manual_registry_training",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:21:13.828428+00:00"
+  },
+  {
+    "data_version": "data-v21.0",
+    "version_number": 21,
+    "project_id": "house_price",
+    "sha256_hash": "e8da6f34109a72b9333786a45a6954f591524f9147210c5e5af526330467587b",
+    "sha256_short": "e8da6f34109a",
+    "row_count": 780,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2010.968,
+      "bedrooms": 3.606,
+      "bathrooms": 2.485,
+      "age_years": 15.696,
+      "distance_city_km": 10.836
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:21:14.187958+00:00"
+  },
+  {
+    "data_version": "data-v22.0",
+    "version_number": 22,
+    "project_id": "house_price",
+    "sha256_hash": "0665750d19cc71ef1ddb4be12b7ea652173235ddb873a3b0ca2374578d5382bf",
+    "sha256_short": "0665750d19cc",
+    "row_count": 930,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 1975.735,
+      "bedrooms": 3.561,
+      "bathrooms": 2.434,
+      "age_years": 15.928,
+      "distance_city_km": 11.033
+    },
+    "trigger_reason": "manual_registry_training",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:21:16.045424+00:00"
+  },
+  {
+    "data_version": "data-v23.0",
+    "version_number": 23,
+    "project_id": "house_price",
+    "sha256_hash": "e8da6f34109a72b9333786a45a6954f591524f9147210c5e5af526330467587b",
+    "sha256_short": "e8da6f34109a",
+    "row_count": 780,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2010.968,
+      "bedrooms": 3.606,
+      "bathrooms": 2.485,
+      "age_years": 15.696,
+      "distance_city_km": 10.836
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:21:16.407121+00:00"
+  },
+  {
+    "data_version": "data-v24.0",
+    "version_number": 24,
+    "project_id": "house_price",
+    "sha256_hash": "21b379f47887a0678b120eb9bc79ee096153bb719711627e74f7a51ebbeb2ec9",
+    "sha256_short": "21b379f47887",
+    "row_count": 930,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 1966.199,
+      "bedrooms": 3.524,
+      "bathrooms": 2.445,
+      "age_years": 16.178,
+      "distance_city_km": 11.104
+    },
+    "trigger_reason": "manual_registry_training",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:21:18.142896+00:00"
+  },
+  {
+    "data_version": "data-v25.0",
+    "version_number": 25,
+    "project_id": "house_price",
+    "sha256_hash": "e8da6f34109a72b9333786a45a6954f591524f9147210c5e5af526330467587b",
+    "sha256_short": "e8da6f34109a",
+    "row_count": 780,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2010.968,
+      "bedrooms": 3.606,
+      "bathrooms": 2.485,
+      "age_years": 15.696,
+      "distance_city_km": 10.836
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:21:18.514540+00:00"
+  },
+  {
+    "data_version": "data-v26.0",
+    "version_number": 26,
+    "project_id": "house_price",
+    "sha256_hash": "d5d5d1d0e929885bc70ae72b951a3f6fd424093b69e7a7804704cfd634a94581",
+    "sha256_short": "d5d5d1d0e929",
+    "row_count": 850,
+    "feature_count": 5,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "feature_means": {
+      "area_sqft": 2064.322,
+      "bedrooms": 3.731,
+      "bathrooms": 2.525,
+      "age_years": 14.93,
+      "distance_city_km": 10.457
+    },
+    "trigger_reason": "initial_dataset_version",
+    "dvc_tracked": true,
+    "storage_tier": "DVC Local Cache + Cloudflare R2",
+    "created_at_utc": "2026-11-17T20:22:46.502765+00:00"
+  }
+]

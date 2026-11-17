@@ -1,4 +1,4 @@
-"""Automated Continuous Training (CT) Webhook Dispatcher & Local Orchestrator."""
+"""Automated Continuous Training (CT) Webhook Dispatcher & Multi-Project Retraining Orchestrator."""
 from __future__ import annotations
 
 import json
@@ -10,7 +10,7 @@ import pandas as pd
 import requests
 
 from src.config import PROJECT_ROOT, load_config
-from src.data.dataset import compute_fao56_features
+from src.data.dataset import DEFAULT_PROJECT_ID, prepare_datasets
 from src.models.registry import model_manager
 from src.models.train import train_and_promote
 
@@ -30,6 +30,7 @@ def dispatch_github_ct_webhook(
     payload = {
         "event_type": event_type,
         "client_payload": {
+            "project_id": drift_report.get("project_id", DEFAULT_PROJECT_ID),
             "triggered_at_utc": datetime.now(timezone.utc).isoformat(),
             "max_psi": drift_report.get("max_psi"),
             "drifted_features": drift_report.get("drifted_features"),
@@ -74,45 +75,54 @@ def trigger_continuous_training(
     drift_report: dict[str, Any],
     new_production_df: pd.DataFrame | None = None,
     execute_local_retrain: bool = True,
+    project_id: str | None = None,
 ) -> dict[str, Any]:
     """
-    Close the MLOps CT loop:
-    1. Dispatch GitHub Actions CT webhook (`repository_dispatch`)
-    2. Merge latest production dataset (Cloudflare R2 / DVC tracked path)
-    3. Retrain multi-model ensemble & log to MLflow
-    4. Atomically hot-swap the promoted Champion model in FastAPI with zero downtime
+    Close the MLOps Continuous Training (CT) loop for any plug-and-play project:
+      1. Dispatch GitHub Actions CT webhook (`repository_dispatch`)
+      2. Merge latest production dataset & snapshot a new Data Version (e.g., data-v2.0)
+      3. Retrain candidate models + VotingEnsemble & register new version in Centralized Model Registry
+      4. Atomically hot-swap the promoted model bundle in FastAPI with zero downtime
     """
     cfg = load_config()
+    pid = (
+        project_id
+        or drift_report.get("project_id")
+        or model_manager.active_project_id
+        or DEFAULT_PROJECT_ID
+    )
     webhook_result = dispatch_github_ct_webhook(drift_report, cfg)
 
     retrain_metadata: dict[str, Any] | None = None
     reload_status: dict[str, Any] | None = None
 
     if execute_local_retrain:
-        ref_path = PROJECT_ROOT / cfg["data"]["reference_path"]
-        prod_path = PROJECT_ROOT / cfg["data"]["production_batch_path"]
-        train_path = PROJECT_ROOT / cfg["data"]["processed_train_path"]
+        prep = prepare_datasets(cfg, project_id=pid)
+        ref_path = prep["reference_path"]
+        prod_path = prep["production_batch_path"]
+        train_path = prep["processed_train_path"]
 
         if new_production_df is not None:
-            enriched_prod = compute_fao56_features(new_production_df)
-            enriched_prod.to_csv(prod_path, index=False)
+            new_production_df.to_csv(prod_path, index=False)
+            prod_df = new_production_df
         else:
-            enriched_prod = compute_fao56_features(pd.read_csv(prod_path))
+            prod_df = pd.read_csv(prod_path)
 
-        ref_df = compute_fao56_features(pd.read_csv(ref_path))
-        merged_df = pd.concat([ref_df, enriched_prod], ignore_index=True)
+        ref_df = pd.read_csv(ref_path)
+        merged_df = pd.concat([ref_df, prod_df], ignore_index=True)
         merged_df.to_csv(train_path, index=False)
 
-        # Also update reference baseline after adapting to the new climate regime
         retrain_metadata = train_and_promote(
             cfg,
             trigger_reason="ct_webhook_drift_retrain",
             custom_df=merged_df,
+            project_id=pid,
         )
-        reload_status = model_manager.reload_model(auto_train_if_missing=False)
+        reload_status = model_manager.reload_model(auto_train_if_missing=False, project_id=pid)
 
     ct_event = {
-        "event_id": f"ct-{int(datetime.now(timezone.utc).timestamp())}",
+        "event_id": f"ct-{pid}-{int(datetime.now(timezone.utc).timestamp())}",
+        "project_id": pid,
         "triggered_at_utc": datetime.now(timezone.utc).isoformat(),
         "drift_summary": {
             "overall_drift_detected": drift_report.get("overall_drift_detected"),
@@ -125,6 +135,14 @@ def trigger_continuous_training(
         ),
         "promoted_model_name": (
             retrain_metadata.get("model_name") if retrain_metadata else None
+        ),
+        "dynamic_best_model": (
+            retrain_metadata.get("dynamic_best_model") if retrain_metadata else None
+        ),
+        "data_version": (
+            retrain_metadata.get("data_version", {}).get("data_version")
+            if retrain_metadata
+            else None
         ),
         "new_metrics": (
             retrain_metadata.get("metrics") if retrain_metadata else None

@@ -2,7 +2,7 @@ name: "3. CT — Automated Drift Retraining (Cloudflare R2 + MLflow)"
 
 on:
   repository_dispatch:
-    types: ["micro_climate_drift_detected"]
+    types: ["data_drift_detected", "micro_climate_drift_detected"]
   schedule:
     - cron: "0 2 * * 0"
   workflow_dispatch:
@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   continuous-training:
-    name: "Pull R2 Data -> Retrain Multi-Model Ensemble -> Promote in MLflow"
+    name: "Pull R2 Data -> Retrain Plug-and-Play Models -> Register in Central Registry"
     runs-on: ubuntu-latest
 
     steps:
@@ -51,15 +51,15 @@ jobs:
             python -m src.data.dataset
           fi
 
-      - name: Retrain Multi-Model Ensemble & Evaluate Quality Gate via MLflow
+      - name: Retrain Models & Update Centralized Model Registry
         run: |
-          python -c "from src.models.train import train_and_promote; res = train_and_promote(trigger_reason='github_actions_ct_webhook'); print(res)"
+          python -c "from src.models.train import train_and_promote; res = train_and_promote(trigger_reason='github_actions_ct_webhook'); print(res['version'], res['model_name'])"
 
       - name: Verify Updated Model with Pytest
         run: |
           pytest -v
 
-      - name: Push updated artifacts to Cloudflare R2 & commit model metadata
+      - name: Push updated artifacts to Cloudflare R2 & commit Central Registry metadata
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -71,6 +71,6 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add models/champion_metadata.json || true
-          git diff --staged --quiet || git commit -m "chore(ct): promote updated ensemble model via automated CT pipeline"
+          git add models/champion_metadata.json models/central_registry.json || true
+          git diff --staged --quiet || git commit -m "chore(ct): promote updated model version in Centralized Registry via CT pipeline"
           git push || true

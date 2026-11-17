@@ -1,0 +1,63 @@
+{
+  "project_id": "house_price",
+  "name": "House Price Prediction",
+  "description": "Predict residential property price ($1,000s) from living area, rooms, property age, and distance to city center.",
+  "domain": "Real Estate Valuation",
+  "target": "price_usd_k",
+  "target_unit": "$1,000 USD",
+  "features": {
+    "area_sqft": {
+      "label": "Living Area (sq ft)",
+      "min": 300.0,
+      "max": 8000.0,
+      "default": 1850.0,
+      "mean": 1800.0,
+      "std": 480.0,
+      "drift_shift": 750.0,
+      "weight": 0.14
+    },
+    "bedrooms": {
+      "label": "Bedrooms (count)",
+      "min": 1.0,
+      "max": 10.0,
+      "default": 3.0,
+      "mean": 3.2,
+      "std": 1.0,
+      "drift_shift": 1.4,
+      "weight": 18.5
+    },
+    "bathrooms": {
+      "label": "Bathrooms (count)",
+      "min": 1.0,
+      "max": 8.0,
+      "default": 2.0,
+      "mean": 2.2,
+      "std": 0.7,
+      "drift_shift": 1.0,
+      "weight": 22.0
+    },
+    "age_years": {
+      "label": "Property Age (years)",
+      "min": 0.0,
+      "max": 100.0,
+      "default": 10.0,
+      "mean": 18.0,
+      "std": 9.0,
+      "drift_shift": -8.0,
+      "weight": -1.6
+    },
+    "distance_city_km": {
+      "label": "Distance to City (km)",
+      "min": 0.5,
+      "max": 80.0,
+      "default": 8.5,
+      "mean": 12.0,
+      "std": 5.0,
+      "drift_shift": -4.5,
+      "weight": -3.5
+    }
+  },
+  "base_intercept": 75.0,
+  "noise_std": 8.5,
+  "created_at_utc": "2026-11-17T19:13:04.310379+00:00"
+}

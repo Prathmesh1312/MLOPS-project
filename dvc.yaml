@@ -5,7 +5,7 @@ stages:
       - src/data/dataset.py
       - configs/config.yaml
     outs:
-      - data/raw/reference_climate.csv
+      - data/raw/reference_data.csv
       - data/raw/current_production.csv
       - data/processed/train_features.csv
 

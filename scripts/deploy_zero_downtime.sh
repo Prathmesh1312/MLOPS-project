@@ -4,7 +4,7 @@
 # ==============================================================================
 set -euo pipefail
 
-IMAGE_TAG="${1:-ghcr.io/shashwat-upadhyay/ml-ci-cd-ct-pipeline:latest}"
+IMAGE_TAG="${1:-ghcr.io/cloud-mlops/plug-and-play-mlops-pipeline:latest}"
 ACTIVE_SLOT_FILE="/tmp/mlops_active_slot"
 
 if [ -f "$ACTIVE_SLOT_FILE" ]; then
@@ -16,13 +16,13 @@ fi
 if [ "$CURRENT_SLOT" = "blue" ]; then
     NEXT_SLOT="green"
     NEXT_PORT=8002
-    OLD_CONTAINER="mlops-api-blue"
-    NEW_CONTAINER="mlops-api-green"
+    OLD_CONTAINER="mlops-serving-blue"
+    NEW_CONTAINER="mlops-serving-green"
 else
     NEXT_SLOT="blue"
     NEXT_PORT=8001
-    OLD_CONTAINER="mlops-api-green"
-    NEW_CONTAINER="mlops-api-blue"
+    OLD_CONTAINER="mlops-serving-green"
+    NEW_CONTAINER="mlops-serving-blue"
 fi
 
 echo "=================================================================="
@@ -36,8 +36,10 @@ docker rm -f "${NEW_CONTAINER}" >/dev/null 2>&1 || true
 
 docker run -d \
     --name "${NEW_CONTAINER}" \
+    -e SERVICE_ROLE="serving-${NEXT_SLOT}" \
     -e DEPLOYMENT_SLOT="${NEXT_SLOT}" \
     -p "${NEXT_PORT}:8000" \
+    -v "$(pwd)/projects:/app/projects" \
     -v "$(pwd)/data:/app/data" \
     -v "$(pwd)/models:/app/models" \
     -v "$(pwd)/logs:/app/logs" \
@@ -62,9 +64,8 @@ fi
 
 echo "${NEXT_SLOT}" > "$ACTIVE_SLOT_FILE"
 
-# If Nginx load balancer container is running, reload its upstream configuration
-if docker ps --format '{{.Names}}' | grep -q "^mlops-nginx-lb$"; then
-    docker exec mlops-nginx-lb nginx -s reload
+if docker ps --format '{{.Names}}' | grep -q "^mlops-nginx-gateway$"; then
+    docker exec mlops-nginx-gateway nginx -s reload
     echo "[Cloud CD] Nginx Reverse Proxy upstream switched to ${NEXT_SLOT} with zero dropped requests."
 fi
 

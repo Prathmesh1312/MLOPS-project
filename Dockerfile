@@ -29,17 +29,18 @@ RUN pip install --upgrade pip setuptools wheel && \
 # ==============================================================================
 FROM python:3.11-slim-bookworm AS runtime
 
-LABEL org.opencontainers.image.title="Cloud MLOps CI/CD/CT Reservoir Evaporation API" \
-      org.opencontainers.image.description="Multi-model ensemble microservice with DVC, R2, MLflow & CT" \
+LABEL org.opencontainers.image.title="CloudMLOps Studio — Plug-and-Play CI/CD/CT Platform" \
+      org.opencontainers.image.description="Multi-Project MLOps Pipeline with Centralized Registry, Dynamic & Ensemble CD Serving, and Drift CT" \
       org.opencontainers.image.base.name="python:3.11-slim-bookworm"
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/opt/venv/bin:$PATH" \
+    SERVICE_ROLE="control-plane" \
     DEPLOYMENT_SLOT="blue" \
+    ACTIVE_PROJECT_ID="house_price" \
     PORT=8000
 
-# Install libgomp1 (required by XGBoost/LightGBM OpenMP) and curl (for container healthcheck)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgomp1 \
     curl \
@@ -48,16 +49,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Copy pre-built virtual environment from builder stage
 COPY --from=builder /opt/venv /opt/venv
 
-# Copy application source, configuration, and initial data/model directories
 COPY configs/ ./configs/
 COPY src/ ./src/
 COPY app/ ./app/
 COPY scripts/ ./scripts/
 
-RUN mkdir -p /app/data/raw /app/data/processed /app/models /app/logs /app/mlruns && \
+RUN mkdir -p /app/projects /app/data/raw /app/data/processed /app/models/registry /app/logs /app/mlruns && \
     chown -R appuser:appgroup /app
 
 USER appuser

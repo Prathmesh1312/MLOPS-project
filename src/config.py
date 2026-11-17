@@ -22,6 +22,8 @@ def load_config(config_path: str | Path | None = None) -> dict[str, Any]:
         cfg["model"]["mlflow_tracking_uri"] = os.environ["MLFLOW_TRACKING_URI"]
     if os.getenv("DEPLOYMENT_SLOT"):
         cfg["cloud"]["default_deployment_slot"] = os.environ["DEPLOYMENT_SLOT"]
+    if os.getenv("ACTIVE_PROJECT_ID"):
+        cfg["project"]["default_project_id"] = os.environ["ACTIVE_PROJECT_ID"]
     if os.getenv("PSI_THRESHOLD"):
         cfg["monitoring"]["psi_threshold"] = float(os.environ["PSI_THRESHOLD"])
     if os.getenv("KS_P_VALUE_THRESHOLD"):

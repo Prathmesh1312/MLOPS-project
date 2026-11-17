@@ -1,80 +1,64 @@
-"""Unit tests for dataset generation, compact FAO-56 feature engineering, and CI schema validation."""
+"""Unit tests for plug-and-play dataset generation, data versioning, and schema validation."""
 from __future__ import annotations
 
-import pandas as pd
-
 from src.data.dataset import (
-    ALL_MODEL_FEATURES,
-    RAW_FEATURES,
-    TARGET_COLUMN,
-    compute_fao56_features,
-    generate_microclimate_dataset,
+    PROJECT_TEMPLATES,
+    build_custom_project_spec,
+    compute_dataset_hash,
+    generate_project_dataset,
+    prepare_datasets,
 )
 from src.data.validator import validate_dataframe
 
 
-def test_generate_microclimate_dataset_and_features() -> None:
-    df = generate_microclimate_dataset(n_samples=120, seed=101, drift_mode=False)
-    assert len(df) == 120
-    for col in ALL_MODEL_FEATURES + [TARGET_COLUMN]:
-        assert col in df.columns
-    assert (df["fao56_baseline_mm_day"] >= 0.0).all()
-    assert (df["vapor_pressure_deficit_kpa"] >= 0.0).all()
-    assert (df[TARGET_COLUMN] > 0.0).all()
+def test_builtin_project_templates_generate_valid_datasets() -> None:
+    for pid, spec in PROJECT_TEMPLATES.items():
+        df = generate_project_dataset(project_id=pid, n_samples=120, seed=42, drift_mode=False)
+        assert len(df) == 120
+        for col in list(spec["features"].keys()) + [spec["target"]]:
+            assert col in df.columns
+        report = validate_dataframe(df, require_target=True, project_id=pid, project_spec=spec)
+        assert report.is_valid is True
+        assert report.errors == []
 
 
-def test_schema_validation_passes_on_valid_data() -> None:
-    df = generate_microclimate_dataset(n_samples=60, seed=42)
-    report = validate_dataframe(df, require_target=True)
-    assert report.is_valid is True
-    assert report.row_count == 60
-    assert report.errors == []
+def test_custom_project_spec_and_data_versioning() -> None:
+    spec = build_custom_project_spec(
+        project_id="laptop_price_test",
+        name="Laptop Price Predictor",
+        description="Predict laptop price from RAM, SSD, and CPU speed",
+        feature_names=["ram_gb", "ssd_gb", "cpu_ghz"],
+        target="price_usd",
+        target_unit="USD",
+    )
+    df = generate_project_dataset(
+        project_id="laptop_price_test",
+        n_samples=100,
+        seed=99,
+        project_spec=spec,
+    )
+    assert len(df) == 100
+    assert "price_usd" in df.columns
+    h1 = compute_dataset_hash(df)
+    h2 = compute_dataset_hash(df)
+    assert h1 == h2 and len(h1) == 64
 
 
 def test_schema_validation_catches_out_of_bounds_and_missing_columns() -> None:
-    df = generate_microclimate_dataset(n_samples=30, seed=42)
-    df.loc[0, "relative_humidity_pct"] = 145.0  # Invalid RH > 100%
-    df_missing = df.drop(columns=["wind_speed_ms"])
+    df = generate_project_dataset(project_id="house_price", n_samples=40, seed=42)
+    df.loc[0, "bedrooms"] = 99.0  # Outside max bound (10.0)
+    df_missing = df.drop(columns=["area_sqft"])
 
-    report = validate_dataframe(df_missing, require_target=True)
+    report = validate_dataframe(df_missing, require_target=True, project_id="house_price")
     assert report.is_valid is False
-    assert "wind_speed_ms" in report.missing_columns
-    assert report.out_of_bounds_counts.get("relative_humidity_pct") == 1
+    assert "area_sqft" in report.missing_columns
+    assert report.out_of_bounds_counts.get("bedrooms") == 1
 
 
-def test_fao56_monotonic_with_temperature_and_solar_radiation() -> None:
-    cool = pd.DataFrame(
-        [
-            {
-                "temperature_c": 18.0,
-                "relative_humidity_pct": 60.0,
-                "wind_speed_ms": 2.5,
-                "solar_radiation_mj": 14.0,
-                "pressure_kpa": 99.0,
-                "water_temp_c": 17.0,
-            }
-        ]
-    )
-    hot = pd.DataFrame(
-        [
-            {
-                "temperature_c": 36.0,
-                "relative_humidity_pct": 35.0,
-                "wind_speed_ms": 4.5,
-                "solar_radiation_mj": 27.0,
-                "pressure_kpa": 99.0,
-                "water_temp_c": 31.0,
-            }
-        ]
-    )
-    cool_out = compute_fao56_features(cool)
-    hot_out = compute_fao56_features(hot)
-    assert (
-        hot_out.iloc[0]["fao56_baseline_mm_day"]
-        > cool_out.iloc[0]["fao56_baseline_mm_day"]
-    )
-    assert (
-        hot_out.iloc[0]["vapor_pressure_deficit_kpa"]
-        > cool_out.iloc[0]["vapor_pressure_deficit_kpa"]
-    )
-    assert set(RAW_FEATURES).issubset(set(hot_out.columns))
+def test_prepare_datasets_records_data_version() -> None:
+    prep = prepare_datasets(project_id="house_price")
+    assert prep["reference_path"].exists()
+    assert prep["processed_train_path"].exists()
+    dv = prep["data_version"]
+    assert dv["data_version"].startswith("data-v")
+    assert len(dv["sha256_short"]) == 12
