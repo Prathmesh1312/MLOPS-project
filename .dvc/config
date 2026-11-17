@@ -1,0 +1,9 @@
+[core]
+    no_scm = True
+    remote = local_storage
+['remote "local_storage"']
+    url = /Users/prathmeshtoke/Local/Project/Python/ml & mlops/ml-ci-cd-ct-pipeline/.dvc_local_storage
+['remote "cloudflare_r2"']
+    url = s3://mlops-evaporation-artifacts/dvc-store
+    endpointurl = https://<CLOUDFLARE_ACCOUNT_ID>.r2.cloudflarestorage.com
+    region = auto

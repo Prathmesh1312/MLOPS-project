@@ -1,0 +1,71 @@
+name: "1. CI — Data Validation, Pytest & Multi-Stage Docker Check"
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-test:
+    name: "Data Quality Gate & Automated Pytest Suite"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install system OpenMP runtime for XGBoost/LightGBM
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libgomp1
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Prepare baseline dataset & run schema validation gate
+        run: |
+          python -m src.data.dataset
+
+      - name: Train baseline multi-model ensemble & verify MLflow registry gate
+        run: |
+          python -m src.models.train
+
+      - name: Execute Pytest suite (Data, Ensemble, Drift, Telemetry & FastAPI)
+        run: |
+          pytest -v
+
+  docker-build-check:
+    name: "Verify Multi-Stage Docker Build (python:3.11-slim-bookworm)"
+    needs: validate-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build multi-stage container image
+        run: |
+          docker build -t mlops-evaporation-api:ci-test .
+
+      - name: Smoke-test container Liveness & Readiness probes
+        run: |
+          docker run -d --name ci-api-smoke -p 8000:8000 mlops-evaporation-api:ci-test
+          for i in $(seq 1 20); do
+            if curl -fsS http://localhost:8000/health/ready; then
+              echo "Container readiness probe succeeded!"
+              break
+            fi
+            sleep 2
+          done
+          curl -fsS http://localhost:8000/metrics | head -n 15
+          docker rm -f ci-api-smoke

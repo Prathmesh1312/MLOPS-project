@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cloud MLOps CI/CD/CT Control Plane</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #131c33;
+      --border: #253458;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --blue: #38bdf8;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --purple: #a855f7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      line-height: 1.5;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 16px 20px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+    .title-group h1 { font-size: 1.35rem; font-weight: 700; color: #fff; }
+    .title-group p { font-size: 0.85rem; color: var(--muted); }
+    .badges { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: #0f172a;
+    }
+    .slot-blue { color: var(--blue); border-color: var(--blue); }
+    .slot-green { color: var(--green); border-color: var(--green); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .card h2 {
+      font-size: 1rem;
+      margin-bottom: 12px;
+      color: var(--blue);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .stat-box {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+    .stat-label { font-size: 0.75rem; color: var(--muted); }
+    .stat-val { font-size: 1.15rem; font-weight: 700; margin-top: 2px; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    label { font-size: 0.75rem; color: var(--muted); display: block; margin-bottom: 4px; }
+    input {
+      width: 100%;
+      padding: 8px 10px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 0.85rem;
+    }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    button {
+      cursor: pointer;
+      padding: 9px 14px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      font-size: 0.82rem;
+      transition: opacity 0.15s;
+    }
+    button:hover { opacity: 0.9; }
+    .btn-primary { background: var(--blue); color: #08101d; }
+    .btn-Warning { background: var(--amber); color: #08101d; }
+    .btn-success { background: var(--green); color: #08101d; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+    th, td {
+      text-align: left;
+      padding: 7px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    th { color: var(--muted); font-weight: 600; }
+    .pill-ok { color: var(--green); font-weight: 700; }
+    .pill-drift { color: var(--red); font-weight: 700; }
+    #statusBanner {
+      margin-bottom: 16px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: #172554;
+      border: 1px solid var(--blue);
+      font-size: 0.85rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-group">
+      <h1>Cloud MLOps CI/CD/CT Control Plane</h1>
+      <p>Multi-Model Ensemble Regressor &bull; DVC + Cloudflare R2 &bull; MLflow Registry &bull; Zero-Downtime Blue/Green Runtime</p>
+    </div>
+    <div class="badges">
+      <span id="slotBadge" class="badge slot-blue">SLOT: BLUE</span>
+      <span id="containerBadge" class="badge">Container: ...</span>
+      <span id="versionBadge" class="badge">Model: v1.0</span>
+      <a href="/docs" style="color:var(--blue);font-size:0.82rem;text-decoration:none;">Swagger /docs &rarr;</a>
+      <a href="/metrics" style="color:var(--purple);font-size:0.82rem;text-decoration:none;">Prometheus /metrics &rarr;</a>
+    </div>
+  </header>
+
+  <div id="statusBanner"></div>
+
+  <div class="grid">
+    <!-- Card 1: Cloud Runtime & MLflow Champion -->
+    <div class="card">
+      <h2>
+        <span>1. Cloud Runtime &amp; MLflow Registry</span>
+        <button class="btn-outline" onclick="refreshAll()">Refresh</button>
+      </h2>
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-label">Active Champion Model</div>
+          <div class="stat-val" id="modelName">...</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Registry Version / R²</div>
+          <div class="stat-val" id="modelMetrics">...</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Total Requests / p95 Latency</div>
+          <div class="stat-val" id="obsStats">...</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Zero-Downtime Hot Reloads</div>
+          <div class="stat-val" id="reloadCount">...</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-outline" onclick="switchSlot('blue')">Route Blue Slot</button>
+        <button class="btn-outline" onclick="switchSlot('green')">Route Green Slot</button>
+        <button class="btn-success" onclick="hotReloadModel()">Hot-Reload Model Artifact</button>
+      </div>
+      <h3 style="font-size:0.82rem;color:var(--muted);margin-top:14px;">MLflow Multi-Model Leaderboard</h3>
+      <table>
+        <thead>
+          <tr><th>Model</th><th>RMSE</th><th>MAE</th><th>R²</th></tr>
+        </thead>
+        <tbody id="leaderboardBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Card 2: Live Inference & Telemetry Logging -->
+    <div class="card">
+      <h2>2. Micro-Climate Inference &amp; Cloud Telemetry</h2>
+      <div class="form-grid">
+        <div><label>Air Temp (°C)</label><input id="inp_temp" type="number" step="0.1" value="31.2"></div>
+        <div><label>Relative Humidity (%)</label><input id="inp_rh" type="number" step="1" value="44.0"></div>
+        <div><label>Wind Speed 2m (m/s)</label><input id="inp_wind" type="number" step="0.1" value="3.8"></div>
+        <div><label>Solar Radiation (MJ/m²)</label><input id="inp_rad" type="number" step="0.1" value="24.5"></div>
+        <div><label>Pressure (kPa)</label><input id="inp_press" type="number" step="0.1" value="98.4"></div>
+        <div><label>Water Temp (°C)</label><input id="inp_wtemp" type="number" step="0.1" value="27.5"></div>
+      </div>
+      <button class="btn-primary" style="width:100%" onclick="runPrediction()">Run Ensemble Prediction &amp; Log Telemetry</button>
+      <div class="stat-row" style="margin-top:12px;">
+        <div class="stat-box">
+          <div class="stat-label">Ensemble Prediction</div>
+          <div class="stat-val" id="predEvap" style="color:var(--green)">-- mm/day</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">FAO-56 Baseline / VPD</div>
+          <div class="stat-val" id="predBaseline">--</div>
+        </div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);" id="predMeta"></div>
+    </div>
+
+    <!-- Card 3: Drift Monitor & Automated Continuous Training (CT) -->
+    <div class="card">
+      <h2>3. Statistical Drift Monitor &amp; Continuous Training (CT)</h2>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;">
+        Monitors incoming micro-climate distribution via <b>KS-Test</b> &amp; <b>Population Stability Index (PSI)</b>.
+        When drift &gt; threshold, fires the CT webhook, retrains the ensemble on Cloudflare R2 / DVC data, and hot-swaps the new model with zero downtime.
+      </p>
+      <div class="btn-row">
+        <button class="btn-outline" onclick="simulateDrift(false)">Simulate Normal Traffic</button>
+        <button class="btn-Warning" onclick="simulateDrift(true)">Inject Micro-Climate Drift &amp; Trigger CT</button>
+      </div>
+      <div class="stat-row" style="margin-top:12px;">
+        <div class="stat-box">
+          <div class="stat-label">Drift Status</div>
+          <div class="stat-val" id="driftStatus">Checking...</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Max Feature PSI</div>
+          <div class="stat-val" id="driftPsi">--</div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Feature</th><th>Ref Mean</th><th>Prod Mean</th><th>PSI</th><th>Status</th></tr>
+        </thead>
+        <tbody id="driftTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Telemetry & CT History -->
+  <div class="card">
+    <h2>4. Production Telemetry Stream &amp; Automated CT Event Log</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Timestamp (UTC)</th>
+          <th>Source</th>
+          <th>Temp (°C)</th>
+          <th>RH (%)</th>
+          <th>Wind (m/s)</th>
+          <th>Predicted (mm/d)</th>
+          <th>Model Version</th>
+          <th>Slot</th>
+          <th>Latency</th>
+        </tr>
+      </thead>
+      <tbody id="logsTableBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    function showBanner(msg) {
+      const el = document.getElementById('statusBanner');
+      el.textContent = msg;
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 6000);
+    }
+
+    async function refreshStatus() {
+      const res = await fetch('/cloud/status');
+      const data = await res.json();
+      const slotEl = document.getElementById('slotBadge');
+      slotEl.textContent = 'SLOT: ' + data.deployment_slot.toUpperCase();
+      slotEl.className = 'badge ' + (data.deployment_slot === 'green' ? 'slot-green' : 'slot-blue');
+      document.getElementById('containerBadge').textContent = 'Container: ' + data.container_id;
+      document.getElementById('versionBadge').textContent = 'Model: ' + (data.active_model.version || 'v1.0');
+      document.getElementById('modelName').textContent = data.active_model.model_name || 'Ensemble';
+      const m = data.active_model.metrics || {};
+      document.getElementById('modelMetrics').textContent = `${data.active_model.version || 'v1'} (R²=${m.r2 ?? '--'})`;
+      document.getElementById('obsStats').textContent = `${data.observability.total_requests} reqs / ${data.observability.p95_latency_ms} ms`;
+      document.getElementById('reloadCount').textContent = data.hot_reload_count;
+
+      const lb = data.active_model.leaderboard || [];
+      document.getElementById('leaderboardBody').innerHTML = lb.map(item => `
+        <tr>
+          <td><b>${item.model_name}</b></td>
+          <td>${item.rmse}</td>
+          <td>${item.mae}</td>
+          <td>${item.r2}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function refreshLogs() {
+      const res = await fetch('/logs/recent?limit=10');
+      const data = await res.json();
+      document.getElementById('logsTableBody').innerHTML = (data.recent_predictions || []).map(r => `
+        <tr>
+          <td>${(r.timestamp_utc || '').slice(11, 19)}</td>
+          <td>${r.source}</td>
+          <td>${r.temperature_c}</td>
+          <td>${r.relative_humidity_pct}</td>
+          <td>${r.wind_speed_ms}</td>
+          <td><b>${r.evaporation_rate_mm_day}</b></td>
+          <td>${r.model_version}</td>
+          <td>${r.deployment_slot}</td>
+          <td>${r.inference_latency_ms} ms</td>
+        </tr>
+      `).join('');
+    }
+
+    async function runPrediction() {
+      const payload = {
+        temperature_c: parseFloat(document.getElementById('inp_temp').value),
+        relative_humidity_pct: parseFloat(document.getElementById('inp_rh').value),
+        wind_speed_ms: parseFloat(document.getElementById('inp_wind').value),
+        solar_radiation_mj: parseFloat(document.getElementById('inp_rad').value),
+        pressure_kpa: parseFloat(document.getElementById('inp_press').value),
+        water_temp_c: parseFloat(document.getElementById('inp_wtemp').value),
+        reservoir_area_km2: 12.5
+      };
+      const res = await fetch('/predict', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const out = await res.json();
+      document.getElementById('predEvap').textContent = `${out.evaporation_rate_mm_day} mm/day`;
+      document.getElementById('predBaseline').textContent = `${out.fao56_baseline_mm_day} mm/d | VPD ${out.vapor_pressure_deficit_kpa} kPa`;
+      document.getElementById('predMeta').textContent =
+        `Water Loss: ${out.estimated_water_loss_m3_day} m³/day | Served by ${out.model_name} (${out.model_version}) on [${out.deployment_slot.toUpperCase()}] in ${out.inference_latency_ms} ms`;
+      await refreshStatus();
+      await refreshLogs();
+    }
+
+    async function simulateDrift(driftMode) {
+      showBanner(driftMode
+        ? 'Injecting drifted micro-climate batch -> Evaluating KS/PSI -> Triggering Automated CT & Zero-Downtime Model Upgrade...'
+        : 'Simulating normal micro-climate traffic -> Evaluating KS/PSI drift check...');
+      const res = await fetch('/drift/simulate', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          drift_mode: driftMode,
+          n_samples: 300,
+          drift_intensity: 1.25,
+          auto_trigger_ct: true
+        })
+      });
+      const out = await res.json();
+      renderDriftReport(out.drift_report);
+      if (out.continuous_training_triggered && out.continuous_training_event) {
+        showBanner(`CT Triggered! Promoted ${out.continuous_training_event.promoted_model_name} (${out.continuous_training_event.promoted_model_version}) with Zero Downtime!`);
+      }
+      await refreshStatus();
+      await refreshLogs();
+    }
+
+    function renderDriftReport(rep) {
+      if (!rep) return;
+      const statusEl = document.getElementById('driftStatus');
+      statusEl.textContent = rep.overall_drift_detected ? 'DRIFT DETECTED (CT FIRED)' : 'STABLE (NO DRIFT)';
+      statusEl.className = 'stat-val ' + (rep.overall_drift_detected ? 'pill-drift' : 'pill-ok');
+      document.getElementById('driftPsi').textContent = rep.max_psi;
+      const fb = rep.feature_breakdown || {};
+      document.getElementById('driftTableBody').innerHTML = Object.keys(fb).map(feat => {
+        const item = fb[feat];
+        return `
+          <tr>
+            <td>${feat}</td>
+            <td>${item.reference_mean}</td>
+            <td>${item.current_mean}</td>
+            <td>${item.psi}</td>
+            <td class="${item.drift_detected ? 'pill-drift' : 'pill-ok'}">${item.drift_detected ? 'DRIFT' : 'OK'}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function switchSlot(slot) {
+      await fetch('/cloud/switch-slot', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({slot})
+      });
+      showBanner(`Switched active routing slot to ${slot.toUpperCase()} with zero downtime.`);
+      await refreshStatus();
+    }
+
+    async function hotReloadModel() {
+      await fetch('/cloud/reload-model', {method: 'POST'});
+      showBanner('Zero-downtime model artifact hot-reload complete.');
+      await refreshStatus();
+    }
+
+    async function refreshAll() {
+      await refreshStatus();
+      await refreshLogs();
+      const res = await fetch('/drift/check?auto_trigger_ct=false', {method: 'POST'});
+      const out = await res.json();
+      renderDriftReport(out.drift_report);
+    }
+
+    refreshAll();
+  </script>
+</body>
+</html>

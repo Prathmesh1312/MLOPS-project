@@ -1,0 +1,59 @@
+project:
+  name: "cloud-mlops-evaporation-pipeline"
+  version: "1.0.0"
+  environment: "local-cloud-hybrid"
+
+cloud:
+  provider: "AWS EC2 + Cloudflare R2"
+  container_base_image: "python:3.11-slim-bookworm"
+  default_deployment_slot: "blue"
+  r2_bucket_name: "mlops-evaporation-artifacts"
+  r2_endpoint_template: "https://<CLOUDFLARE_ACCOUNT_ID>.r2.cloudflarestorage.com"
+  github_repo: "shashwat-upadhyay/ml-ci-cd-ct-pipeline"
+  webhook_event_type: "micro_climate_drift_detected"
+
+data:
+  reference_path: "data/raw/reference_climate.csv"
+  production_batch_path: "data/raw/current_production.csv"
+  processed_train_path: "data/processed/train_features.csv"
+  n_reference_samples: 1500
+  random_seed: 42
+  features:
+    - "temperature_c"
+    - "relative_humidity_pct"
+    - "wind_speed_ms"
+    - "solar_radiation_mj"
+    - "pressure_kpa"
+    - "water_temp_c"
+  engineered_features:
+    - "vapor_pressure_deficit_kpa"
+    - "fao56_baseline_mm_day"
+    - "thermal_gradient_c"
+  target: "evaporation_rate_mm_day"
+
+model:
+  experiment_name: "Reservoir-Evaporation-MultiModel-MLOps"
+  registered_model_name: "EvaporationEnsembleRegressor"
+  mlflow_tracking_uri: "sqlite:///mlflow.db"
+  champion_artifact_path: "models/champion_ensemble.joblib"
+  metadata_path: "models/champion_metadata.json"
+  test_size: 0.2
+  min_r2_gate: 0.85
+  hyperparameters:
+    ridge_alpha: 1.0
+    rf_n_estimators: 120
+    rf_max_depth: 10
+    xgb_n_estimators: 140
+    xgb_learning_rate: 0.06
+    xgb_max_depth: 5
+    lgbm_n_estimators: 140
+    lgbm_learning_rate: 0.06
+
+monitoring:
+  telemetry_log_path: "logs/production_telemetry.jsonl"
+  drift_report_path: "logs/latest_drift_report.json"
+  ct_history_path: "logs/ct_events_history.json"
+  ks_p_value_threshold: 0.01
+  psi_threshold: 0.25
+  min_drifted_features_ratio: 0.33
+  auto_trigger_ct_on_drift: true

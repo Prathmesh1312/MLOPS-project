@@ -1,0 +1,86 @@
+{
+  "model_name": "StackingEnsemble",
+  "registered_model_name": "EvaporationEnsembleRegressor",
+  "version": "v10.0",
+  "version_number": 10,
+  "mlflow_run_id": "54fb064017204a7ab0878e5cc7e397fa",
+  "experiment_name": "Reservoir-Evaporation-MultiModel-MLOps",
+  "promoted": true,
+  "trigger_reason": "ct_webhook_drift_retrain",
+  "trained_at_utc": "2026-11-17T09:20:56.706747+00:00",
+  "train_samples": 1440,
+  "test_samples": 360,
+  "features": [
+    "temperature_c",
+    "relative_humidity_pct",
+    "wind_speed_ms",
+    "solar_radiation_mj",
+    "pressure_kpa",
+    "water_temp_c",
+    "vapor_pressure_deficit_kpa",
+    "fao56_baseline_mm_day",
+    "thermal_gradient_c"
+  ],
+  "metrics": {
+    "rmse": 0.2405,
+    "mae": 0.1876,
+    "r2": 0.9957,
+    "mape_pct": 3.325
+  },
+  "leaderboard": [
+    {
+      "model_name": "StackingEnsemble",
+      "run_id": "54fb064017204a7ab0878e5cc7e397fa",
+      "rmse": 0.2405,
+      "mae": 0.1876,
+      "r2": 0.9957,
+      "mape_pct": 3.325,
+      "train_duration_sec": 4.703
+    },
+    {
+      "model_name": "RidgeBaseline",
+      "run_id": "9ff1d140e5ec4f48be8ef12dc977b30a",
+      "rmse": 0.2492,
+      "mae": 0.1944,
+      "r2": 0.9954,
+      "mape_pct": 3.431,
+      "train_duration_sec": 0.248
+    },
+    {
+      "model_name": "VotingEnsemble",
+      "run_id": "9459120a8bfe4a85a3dcf8a2027a84cc",
+      "rmse": 0.2709,
+      "mae": 0.2033,
+      "r2": 0.9945,
+      "mape_pct": 3.527,
+      "train_duration_sec": 0.701
+    },
+    {
+      "model_name": "XGBoost",
+      "run_id": "fe2e74b3490842ec9e5e129296c2c787",
+      "rmse": 0.2908,
+      "mae": 0.2219,
+      "r2": 0.9937,
+      "mape_pct": 3.752,
+      "train_duration_sec": 0.163
+    },
+    {
+      "model_name": "RandomForest",
+      "run_id": "194577b5afc740498053ebe4391b59b7",
+      "rmse": 0.309,
+      "mae": 0.2249,
+      "r2": 0.9929,
+      "mape_pct": 3.888,
+      "train_duration_sec": 0.086
+    },
+    {
+      "model_name": "LightGBM",
+      "run_id": "cb19b6f5e9e745038fa6e2e20c390d7a",
+      "rmse": 0.3104,
+      "mae": 0.219,
+      "r2": 0.9928,
+      "mape_pct": 3.727,
+      "train_duration_sec": 0.472
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+schema: '2.0'
+stages:
+  prepare_data:
+    cmd: python -m src.data.dataset
+    deps:
+    - path: configs/config.yaml
+      hash: md5
+      md5: af44513a3801fe7dfc13fda8a5f5e21b
+      size: 1830
+    - path: src/data/dataset.py
+      hash: md5
+      md5: d4b9980258afe524e3277b423370f132
+      size: 6760
+    outs:
+    - path: data/processed/train_features.csv
+      hash: md5
+      md5: 9b3a74eccb55353016c214ec3213a5d5
+      size: 121854
+    - path: data/raw/current_production.csv
+      hash: md5
+      md5: 90592334e987860c08a03a188c930227
+      size: 20457
+    - path: data/raw/reference_climate.csv
+      hash: md5
+      md5: a09f60f992d67066633ff867a6f87783
+      size: 101584
+  train_ensemble:
+    cmd: python -m src.models.train
+    deps:
+    - path: configs/config.yaml
+      hash: md5
+      md5: af44513a3801fe7dfc13fda8a5f5e21b
+      size: 1830
+    - path: data/processed/train_features.csv
+      hash: md5
+      md5: 9b3a74eccb55353016c214ec3213a5d5
+      size: 121854
+    - path: src/models/ensemble.py
+      hash: md5
+      md5: cfc7d7360898f308f3e903bc57cf8735
+      size: 2995
+    - path: src/models/train.py
+      hash: md5
+      md5: e56b877a42a6de1965d20e35f8cee88b
+      size: 5656
+    outs:
+    - path: models/champion_ensemble.joblib
+      hash: md5
+      md5: a0d4885975a1b79488db7e395c680553
+      size: 18363772
+    - path: models/champion_metadata.json
+      hash: md5
+      md5: 49f50bc7f3b7b017faa1f36fa0bbfcaf
+      size: 2132

@@ -1,0 +1,23 @@
+stages:
+  prepare_data:
+    cmd: python -m src.data.dataset
+    deps:
+      - src/data/dataset.py
+      - configs/config.yaml
+    outs:
+      - data/raw/reference_climate.csv
+      - data/raw/current_production.csv
+      - data/processed/train_features.csv
+
+  train_ensemble:
+    cmd: python -m src.models.train
+    deps:
+      - src/models/ensemble.py
+      - src/models/train.py
+      - data/processed/train_features.csv
+      - configs/config.yaml
+    outs:
+      - models/champion_ensemble.joblib
+    metrics:
+      - models/champion_metadata.json:
+          cache: false

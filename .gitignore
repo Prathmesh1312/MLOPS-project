@@ -1,0 +1,32 @@
+# Python bytecode & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local MLflow & Local DVC storage (kept local, artifacts tracked via DVC/Registry)
+mlruns/
+mlflow.db
+.dvc/tmp/
+.dvc/cache/
+.dvc_local_storage/
+
+# Runtime telemetry & logs (created dynamically at runtime)
+logs/*.jsonl
+logs/*.json
+logs/*.log
+
+# DVC-tracked datasets and model binaries (stored in DVC / Cloudflare R2, not Git)
+data/raw/*.csv
+data/processed/*.csv
+models/*.joblib
+
+# OS files
+.DS_Store
+Thumbs.db
+.env
