@@ -3326,7 +3326,7 @@
     "registered_model_name": "house_price_PlugAndPlayRegressor",
     "version": "v19.0",
     "version_number": 19,
-    "stage": "Production",
+    "stage": "Archived",
     "mlflow_run_id": "7584475d5b8348a49dc9d4be1017df2e",
     "experiment_name": "PlugAndPlay-Cloud-MLOps-Registry-house_price",
     "promoted": true,
@@ -3445,6 +3445,405 @@
         "r2": 0.9325,
         "mape_pct": 6.185,
         "train_duration_sec": 0.0041
+      }
+    ]
+  },
+  {
+    "registry_id": "house_price:v20.0",
+    "project_id": "house_price",
+    "project_name": "House Price Prediction",
+    "domain": "Real Estate Valuation",
+    "model_name": "GradientBoosting",
+    "dynamic_best_model": "GradientBoosting",
+    "ensemble_model": "VotingEnsemble",
+    "registered_model_name": "house_price_PlugAndPlayRegressor",
+    "version": "v20.0",
+    "version_number": 20,
+    "stage": "Archived",
+    "mlflow_run_id": "39e01231d558441a9d5e6638d0516cb3",
+    "experiment_name": "PlugAndPlay-Cloud-MLOps-Registry-house_price",
+    "promoted": true,
+    "trigger_reason": "github_actions_ct_webhook",
+    "trained_at_utc": "2026-11-22T09:12:51.017824+00:00",
+    "train_samples": 680,
+    "test_samples": 170,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "target_unit": "$1,000 USD",
+    "data_version": {
+      "data_version": "data-v26.0",
+      "version_number": 26,
+      "project_id": "house_price",
+      "sha256_hash": "d5d5d1d0e929885bc70ae72b951a3f6fd424093b69e7a7804704cfd634a94581",
+      "sha256_short": "d5d5d1d0e929",
+      "row_count": 850,
+      "feature_count": 5,
+      "features": [
+        "area_sqft",
+        "bedrooms",
+        "bathrooms",
+        "age_years",
+        "distance_city_km"
+      ],
+      "target": "price_usd_k",
+      "feature_means": {
+        "area_sqft": 2064.322,
+        "bedrooms": 3.731,
+        "bathrooms": 2.525,
+        "age_years": 14.93,
+        "distance_city_km": 10.457
+      },
+      "trigger_reason": "initial_dataset_version",
+      "dvc_tracked": true,
+      "storage_tier": "DVC Local Cache + Cloudflare R2",
+      "created_at_utc": "2026-11-17T20:22:46.502765+00:00"
+    },
+    "artifact_path": "models/registry/house_price_v20.joblib",
+    "metrics": {
+      "rmse": 17.7283,
+      "mae": 13.2933,
+      "r2": 0.9831,
+      "mape_pct": 3.114
+    },
+    "dynamic_metrics": {
+      "model_name": "GradientBoosting",
+      "rmse": 17.7283,
+      "mae": 13.2933,
+      "r2": 0.9831
+    },
+    "ensemble_metrics": {
+      "model_name": "VotingEnsemble",
+      "rmse": 18.1199,
+      "mae": 13.5352,
+      "r2": 0.9823
+    },
+    "leaderboard": [
+      {
+        "model_name": "GradientBoosting",
+        "model_type": "Single (Dynamic)",
+        "description": "Sequential small trees where each tree corrects the previous tree's residual error.",
+        "run_id": "39e01231d558441a9d5e6638d0516cb3",
+        "rmse": 17.7283,
+        "mae": 13.2933,
+        "r2": 0.9831,
+        "mape_pct": 3.114,
+        "train_duration_sec": 0.0943
+      },
+      {
+        "model_name": "VotingEnsemble",
+        "model_type": "Ensemble",
+        "description": "Ensemble combining LinearRegression + DecisionTree + RandomForest + GradientBoosting.",
+        "run_id": "6c2ea8e660b640799b375b47b81df362",
+        "rmse": 18.1199,
+        "mae": 13.5352,
+        "r2": 0.9823,
+        "mape_pct": 3.229,
+        "train_duration_sec": 0.2025
+      },
+      {
+        "model_name": "LinearRegression",
+        "model_type": "Single (Dynamic)",
+        "description": "Simple linear equation (y = w\u00b7x + b) over standardized features \u2014 fast & easy to interpret.",
+        "run_id": "b7ea8e13c3934d419f63fe396583f2ab",
+        "rmse": 19.521,
+        "mae": 14.4778,
+        "r2": 0.9795,
+        "mape_pct": 3.574,
+        "train_duration_sec": 0.2229
+      },
+      {
+        "model_name": "RandomForest",
+        "model_type": "Single (Dynamic)",
+        "description": "Bagging collection of decision trees averaging independent predictions.",
+        "run_id": "59547a4be58e4b9eb645054cf3b343ff",
+        "rmse": 21.2318,
+        "mae": 15.9483,
+        "r2": 0.9757,
+        "mape_pct": 3.876,
+        "train_duration_sec": 0.1132
+      },
+      {
+        "model_name": "DecisionTree",
+        "model_type": "Single (Dynamic)",
+        "description": "Single flowchart-like tree of if-else feature splits (max_depth=6).",
+        "run_id": "a234f689eef14fc585080a6f6cf68a71",
+        "rmse": 35.3891,
+        "mae": 26.6718,
+        "r2": 0.9325,
+        "mape_pct": 6.185,
+        "train_duration_sec": 0.0089
+      }
+    ]
+  },
+  {
+    "registry_id": "house_price:v21.0",
+    "project_id": "house_price",
+    "project_name": "House Price Prediction",
+    "domain": "Real Estate Valuation",
+    "model_name": "LinearRegression",
+    "dynamic_best_model": "LinearRegression",
+    "ensemble_model": "VotingEnsemble",
+    "registered_model_name": "house_price_PlugAndPlayRegressor",
+    "version": "v21.0",
+    "version_number": 21,
+    "stage": "Archived",
+    "mlflow_run_id": "0acca465764547e0b0bc38ab838508e8",
+    "experiment_name": "PlugAndPlay-Cloud-MLOps-Registry-house_price",
+    "promoted": true,
+    "trigger_reason": "ct_webhook_drift_retrain",
+    "trained_at_utc": "2026-11-22T09:12:58.215109+00:00",
+    "train_samples": 624,
+    "test_samples": 156,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "target_unit": "$1,000 USD",
+    "data_version": {
+      "data_version": "data-v27.0",
+      "version_number": 27,
+      "project_id": "house_price",
+      "sha256_hash": "78acdc050cb50fef02b3dc763795fd00c202ed4c64363ba60da086442db3ce7f",
+      "sha256_short": "78acdc050cb5",
+      "row_count": 780,
+      "feature_count": 5,
+      "features": [
+        "area_sqft",
+        "bedrooms",
+        "bathrooms",
+        "age_years",
+        "distance_city_km"
+      ],
+      "target": "price_usd_k",
+      "feature_means": {
+        "area_sqft": 2031.444,
+        "bedrooms": 3.645,
+        "bathrooms": 2.464,
+        "age_years": 15.187,
+        "distance_city_km": 10.879
+      },
+      "trigger_reason": "initial_dataset_version",
+      "dvc_tracked": true,
+      "storage_tier": "DVC Local Cache + Cloudflare R2",
+      "created_at_utc": "2026-11-22T09:12:57.566233+00:00"
+    },
+    "artifact_path": "models/registry/house_price_v21.joblib",
+    "metrics": {
+      "rmse": 15.4383,
+      "mae": 11.943,
+      "r2": 0.9893,
+      "mape_pct": 2.982
+    },
+    "dynamic_metrics": {
+      "model_name": "LinearRegression",
+      "rmse": 15.4383,
+      "mae": 11.943,
+      "r2": 0.9893
+    },
+    "ensemble_metrics": {
+      "model_name": "VotingEnsemble",
+      "rmse": 18.3406,
+      "mae": 14.4766,
+      "r2": 0.9849
+    },
+    "leaderboard": [
+      {
+        "model_name": "LinearRegression",
+        "model_type": "Single (Dynamic)",
+        "description": "Simple linear equation (y = w\u00b7x + b) over standardized features \u2014 fast & easy to interpret.",
+        "run_id": "0acca465764547e0b0bc38ab838508e8",
+        "rmse": 15.4383,
+        "mae": 11.943,
+        "r2": 0.9893,
+        "mape_pct": 2.982,
+        "train_duration_sec": 0.011
+      },
+      {
+        "model_name": "VotingEnsemble",
+        "model_type": "Ensemble",
+        "description": "Ensemble combining LinearRegression + DecisionTree + RandomForest + GradientBoosting.",
+        "run_id": "2ec463abaca44df99efb92eb719cfc7d",
+        "rmse": 18.3406,
+        "mae": 14.4766,
+        "r2": 0.9849,
+        "mape_pct": 3.563,
+        "train_duration_sec": 0.1982
+      },
+      {
+        "model_name": "GradientBoosting",
+        "model_type": "Single (Dynamic)",
+        "description": "Sequential small trees where each tree corrects the previous tree's residual error.",
+        "run_id": "5f0bbce18d9e4b2c81203029fa0515fc",
+        "rmse": 18.6015,
+        "mae": 13.7929,
+        "r2": 0.9844,
+        "mape_pct": 3.28,
+        "train_duration_sec": 0.0909
+      },
+      {
+        "model_name": "RandomForest",
+        "model_type": "Single (Dynamic)",
+        "description": "Bagging collection of decision trees averaging independent predictions.",
+        "run_id": "7ba98bb55cdc447694fb53dbf41c357b",
+        "rmse": 21.5535,
+        "mae": 16.9497,
+        "r2": 0.9791,
+        "mape_pct": 4.163,
+        "train_duration_sec": 0.1022
+      },
+      {
+        "model_name": "DecisionTree",
+        "model_type": "Single (Dynamic)",
+        "description": "Single flowchart-like tree of if-else feature splits (max_depth=6).",
+        "run_id": "b43e2b806a0f43a28e7ee6545de870b9",
+        "rmse": 35.4367,
+        "mae": 28.1704,
+        "r2": 0.9435,
+        "mape_pct": 7.031,
+        "train_duration_sec": 0.0101
+      }
+    ]
+  },
+  {
+    "registry_id": "house_price:v22.0",
+    "project_id": "house_price",
+    "project_name": "House Price Prediction",
+    "domain": "Real Estate Valuation",
+    "model_name": "LinearRegression",
+    "dynamic_best_model": "LinearRegression",
+    "ensemble_model": "VotingEnsemble",
+    "registered_model_name": "house_price_PlugAndPlayRegressor",
+    "version": "v22.0",
+    "version_number": 22,
+    "stage": "Production",
+    "mlflow_run_id": "0f6b665882da4b8aabba6cd593336560",
+    "experiment_name": "PlugAndPlay-Cloud-MLOps-Registry-house_price",
+    "promoted": true,
+    "trigger_reason": "pytest_unit_verification",
+    "trained_at_utc": "2026-11-22T09:12:59.225620+00:00",
+    "train_samples": 240,
+    "test_samples": 60,
+    "features": [
+      "area_sqft",
+      "bedrooms",
+      "bathrooms",
+      "age_years",
+      "distance_city_km"
+    ],
+    "target": "price_usd_k",
+    "target_unit": "$1,000 USD",
+    "data_version": {
+      "data_version": "data-v28.0",
+      "version_number": 28,
+      "project_id": "house_price",
+      "sha256_hash": "977ab6012b0ba882d816390b234606d969634d9ed99d235b9692829c24266bd5",
+      "sha256_short": "977ab6012b0b",
+      "row_count": 300,
+      "feature_count": 5,
+      "features": [
+        "area_sqft",
+        "bedrooms",
+        "bathrooms",
+        "age_years",
+        "distance_city_km"
+      ],
+      "target": "price_usd_k",
+      "feature_means": {
+        "area_sqft": 1773.302,
+        "bedrooms": 3.223,
+        "bathrooms": 2.21,
+        "age_years": 18.526,
+        "distance_city_km": 11.633
+      },
+      "trigger_reason": "pytest_unit_verification",
+      "dvc_tracked": true,
+      "storage_tier": "DVC Local Cache + Cloudflare R2",
+      "created_at_utc": "2026-11-22T09:12:58.732913+00:00"
+    },
+    "artifact_path": "models/registry/house_price_v22.joblib",
+    "metrics": {
+      "rmse": 18.8726,
+      "mae": 12.9093,
+      "r2": 0.9325,
+      "mape_pct": 3.605
+    },
+    "dynamic_metrics": {
+      "model_name": "LinearRegression",
+      "rmse": 18.8726,
+      "mae": 12.9093,
+      "r2": 0.9325
+    },
+    "ensemble_metrics": {
+      "model_name": "VotingEnsemble",
+      "rmse": 25.4027,
+      "mae": 16.2932,
+      "r2": 0.8777
+    },
+    "leaderboard": [
+      {
+        "model_name": "LinearRegression",
+        "model_type": "Single (Dynamic)",
+        "description": "Simple linear equation (y = w\u00b7x + b) over standardized features \u2014 fast & easy to interpret.",
+        "run_id": "0f6b665882da4b8aabba6cd593336560",
+        "rmse": 18.8726,
+        "mae": 12.9093,
+        "r2": 0.9325,
+        "mape_pct": 3.605,
+        "train_duration_sec": 0.0104
+      },
+      {
+        "model_name": "VotingEnsemble",
+        "model_type": "Ensemble",
+        "description": "Ensemble combining LinearRegression + DecisionTree + RandomForest + GradientBoosting.",
+        "run_id": "58fd3b05405747f9a8cbc74cb2142d76",
+        "rmse": 25.4027,
+        "mae": 16.2932,
+        "r2": 0.8777,
+        "mape_pct": 4.373,
+        "train_duration_sec": 0.1549
+      },
+      {
+        "model_name": "GradientBoosting",
+        "model_type": "Single (Dynamic)",
+        "description": "Sequential small trees where each tree corrects the previous tree's residual error.",
+        "run_id": "52ac395c909440a9a8d2f63b0b95b9d8",
+        "rmse": 27.6188,
+        "mae": 18.2355,
+        "r2": 0.8554,
+        "mape_pct": 4.902,
+        "train_duration_sec": 0.0578
+      },
+      {
+        "model_name": "RandomForest",
+        "model_type": "Single (Dynamic)",
+        "description": "Bagging collection of decision trees averaging independent predictions.",
+        "run_id": "586896b01faa4c8189eb88a1e588fd8a",
+        "rmse": 29.031,
+        "mae": 18.7943,
+        "r2": 0.8403,
+        "mape_pct": 5.083,
+        "train_duration_sec": 0.093
+      },
+      {
+        "model_name": "DecisionTree",
+        "model_type": "Single (Dynamic)",
+        "description": "Single flowchart-like tree of if-else feature splits (max_depth=6).",
+        "run_id": "e6bf5bc9bf6743fc88172b29f55b53a9",
+        "rmse": 37.4288,
+        "mae": 27.52,
+        "r2": 0.7345,
+        "mape_pct": 7.748,
+        "train_duration_sec": 0.0087
       }
     ]
   }
